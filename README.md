@@ -19,8 +19,8 @@ Students don't memorize the hybrid key exchange diagram. They rebuild it by lock
 ### Play it
 
 - **Locally:** download or clone the repo and open `game/index.html` in any modern browser. There's nothing to install, and it runs offline.
-- **On the web:** turn on GitHub Pages (Settings → Pages → Deploy from branch → `main`, `/ (root)`). The game will then be at
-  `https://michaelaperry.github.io/UnderstandingEncryption/game/`
+- **On the web (GitHub Pages is on):** the game is live at
+  **https://michaelaperry.github.io/UnderstandingEncryption/** — the root page redirects into the game. The game files also sit directly at `.../UnderstandingEncryption/game/`.
 
 ### Missions
 
