@@ -186,6 +186,12 @@ h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:
 .q .opts{display:flex;flex-direction:column;gap:6px;margin-top:8px}
 .opt{text-align:left;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:9px 12px;cursor:pointer}
 .opt:hover{background:var(--panel2)}
+.bins{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:12px}
+.bin{border:2px solid var(--line);background:var(--panel);border-radius:10px;padding:14px 10px;cursor:pointer;font-weight:700;font-family:var(--f-display);font-size:17px}
+.bin:hover{border-color:var(--accent)}
+.bin.right{border-color:var(--good);background:var(--good-soft)}
+.bin.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.sort-q{font-family:var(--f-body);font-weight:700;font-size:19px;line-height:1.4}
 .opt.right{border-color:var(--good);background:var(--good-soft)}
 .opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
 .explain{font-size:15px;margin-top:8px;padding:8px 12px;border-left:3px solid var(--accent);background:var(--panel2)}
@@ -236,15 +242,97 @@ h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:
 .picker .cert{cursor:pointer;margin:0}
 .picker .cert:hover{outline:3px solid var(--accent)}
 
+
+/* characters, briefings, codes */
+
+.stage-row{display:flex;align-items:center;gap:12px}
+.who{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.who span{font-family:var(--f-display);font-size:13px;color:var(--muted);max-width:16ch}
+.pt-lg{width:78px;height:78px}
+.pt-lg .pt{width:78px;height:78px}
+.stage-wire{flex:1;position:relative;height:24px;min-width:60px}
+.wire-dash{position:absolute;inset:50% 0 auto 0;height:4px;border-radius:2px;transform:translateY(-50%);background:repeating-linear-gradient(90deg,var(--line) 0 10px,transparent 10px 16px)}
+.packet{position:absolute;top:50%;left:0;width:26px;height:26px;margin-top:-13px;border-radius:6px;background:var(--k-shared);display:grid;place-items:center;box-shadow:0 0 0 3px var(--panel);animation:heroPk 3.2s ease-in-out infinite}
+@keyframes heroPk{0%{left:0}50%{left:calc(100% - 26px)}100%{left:0}}
+.eve-tap{margin:6px auto 0;position:relative;padding-top:16px}
+.tap-line{position:absolute;top:-2px;left:50%;width:2px;height:18px;background:var(--eve);transform:translateX(-50%)}
+.eve-tap .pt-lg{width:60px;height:60px}
+.eve-tap .pt{width:60px;height:60px}
+@media (prefers-reduced-motion:reduce){.packet{animation:none;left:calc(50% - 13px)}}
+
+
+.tablewrap{overflow-x:auto}
+table.db{border-collapse:collapse;width:100%;font-size:14px}
+table.db th,table.db td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+table.db th{font-family:var(--f-display);font-size:12px;letter-spacing:.06em;color:var(--muted)}
+table.db tr.sel td{background:var(--accent-soft)}
+table.db tr.got td{background:var(--good-soft)}
+table.db.rb tbody tr{cursor:pointer}
+table.db.rb tbody tr:hover td{background:var(--panel2)}
+.ledger{display:flex;flex-wrap:wrap;gap:0;align-items:stretch;margin-bottom:14px}
+.block{flex:1 1 190px;min-width:180px;border:2px solid var(--good);border-radius:10px;background:var(--panel);padding:10px;position:relative;box-shadow:var(--shadow)}
+.block.bad{border-color:var(--bad)}
+.block.edited{outline:2px dashed var(--warn);outline-offset:2px}
+.blk-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.ok-tag{color:var(--good);font-family:var(--f-mono);font-size:11px;font-weight:600}
+.bad-tag{color:var(--bad);font-family:var(--f-mono);font-size:11px;font-weight:600}
+.blk-body label{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.blk-body .small{font-size:12px;overflow-wrap:anywhere;white-space:normal}
+.blk-body .mism{color:var(--bad);text-decoration:line-through}
+.blk-what{flex:1 1 120px}
+.chain-link{position:absolute;right:-11px;top:50%;width:20px;height:4px;background:var(--good);transform:translateY(-50%);z-index:1}
+.chain-link.cut{background:var(--bad);height:0;border-top:4px dashed var(--bad)}
+.block.bad .chain-link{background:var(--bad)}
+.warn-h{color:var(--bad)}
+.stego{border:1px solid var(--line);border-radius:8px;overflow:hidden;line-height:0}
+@media (max-width:560px){.block{flex:1 1 100%}.chain-link{display:none}}
+
+.pt{width:56px;height:56px;flex:none;display:block}
+.cast{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.cast div{display:flex;gap:10px;align-items:flex-start;min-width:0}
+.cast .pt{width:48px;height:48px}
+.cast span{min-width:0}
+.tile-top{display:flex;align-items:center;gap:10px}
+.tile-pt{width:44px;height:44px}
+.tiles.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.brief{display:flex;flex-direction:column;gap:14px;max-width:780px}
+.line{display:flex;gap:12px;align-items:flex-end;animation:rise .45s both}
+.line.me{flex-direction:row-reverse;align-self:flex-end}
+.line .pt{width:64px;height:64px}
+.bubble{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:12px;padding:10px 14px;box-shadow:var(--shadow);min-width:0;max-width:62ch}
+.line.me .bubble{border-left-width:1px;border-right:4px solid var(--c)}
+.bubble b{font-family:var(--f-display);font-size:15px;letter-spacing:.04em}
+.bubble p{margin:2px 0 0;font-size:17px}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}}
+.panel h3 .pt{width:30px;height:30px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.inp{font:inherit;border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:8px;padding:8px 10px;min-width:0;flex:1 1 180px}
+.codebox{border:1px dashed var(--accent);border-radius:10px;padding:12px;margin:12px 0;display:flex;flex-direction:column;gap:6px}
+.code{font-family:var(--f-mono);font-size:19px;font-weight:600;letter-spacing:.06em;background:var(--panel2);padding:6px 10px;border-radius:6px;user-select:all;overflow-wrap:anywhere}
+.report{margin-top:30px}
+.report .chapter-head{margin-bottom:6px}
+.rc-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+.rc-grid>div{display:flex;flex-direction:column;gap:8px;min-width:0}
+.rc-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:2px;font-size:15px}
+.rc-list li{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid var(--line);padding-block:3px}
+.rc-mini{list-style:none;padding:0;margin:6px 0 0;font-size:14px}
+.vf{display:flex;flex-direction:column;gap:8px}
+.soundbtn{background:transparent;border:1px solid var(--line);border-radius:8px;padding:5px 8px;cursor:pointer;display:grid;place-items:center}
+.soundbtn:hover{background:var(--panel2)}
+.teacher .btn{margin-top:4px}
+
 @media (max-width:900px){
   .bench{grid-template-columns:minmax(0,1fr)}
   .hero{grid-template-columns:minmax(0,1fr)}
-  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tiles,.tiles.four{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rc-grid{grid-template-columns:minmax(0,1fr)}
   .cp,.two,.picker{grid-template-columns:minmax(0,1fr)}
   .sessions{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:560px){
-  .tiles,.sessions{grid-template-columns:minmax(0,1fr)}
+  .tiles,.tiles.four,.sessions{grid-template-columns:minmax(0,1fr)}
+  .line .pt{width:48px;height:48px}
+  .bubble p{font-size:16px}
   .cast{grid-template-columns:repeat(2,minmax(0,1fr))}
   .verdicts{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
   .hero p{font-size:17px}
@@ -263,6 +351,7 @@ h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:
       BEAT EVE
     </button>
     <span class="spacer"></span>
+    <button type="button" class="soundbtn" id="soundBtn" aria-label="Sound on" aria-pressed="true"></button>
     <span class="starcount" id="starCount" aria-live="polite"></span>
   </div>
 </header>
@@ -280,6 +369,69 @@ const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math
 const screen=$('#screen');
 let cleanup=null, current=null;
 
+/* ---------- SHA-256 (real, synchronous; used for hashing, mining and completion codes) ---------- */
+const sha256=(()=>{
+  const primes=[];for(let n=2;primes.length<64;n++){if(primes.every(p=>n%p))primes.push(n);}
+  const frac=x=>Math.floor((x-Math.floor(x))*4294967296)|0;
+  const K=primes.map(p=>frac(Math.cbrt(p))), H0=primes.slice(0,8).map(p=>frac(Math.sqrt(p)));
+  const enc=new TextEncoder();
+  return function(msg){
+    const bytes=enc.encode(msg),l=bytes.length,buf=new Uint8Array(((l+9+63)>>6)<<6);
+    buf.set(bytes);buf[l]=0x80;
+    const dv=new DataView(buf.buffer);dv.setUint32(buf.length-4,(l*8)>>>0);dv.setUint32(buf.length-8,Math.floor(l/536870912));
+    const H=H0.slice(),W=new Int32Array(64);
+    for(let i=0;i<buf.length;i+=64){
+      for(let t=0;t<16;t++)W[t]=dv.getInt32(i+t*4);
+      for(let t=16;t<64;t++){const x=W[t-15],y=W[t-2];
+        W[t]=(W[t-16]+((x>>>7|x<<25)^(x>>>18|x<<14)^(x>>>3))+W[t-7]+((y>>>17|y<<15)^(y>>>19|y<<13)^(y>>>10)))|0;}
+      let [a,b,c,d,e,f,g,h]=H;
+      for(let t=0;t<64;t++){
+        const t1=(h+((e>>>6|e<<26)^(e>>>11|e<<21)^(e>>>25|e<<7))+((e&f)^(~e&g))+K[t]+W[t])|0;
+        const t2=(((a>>>2|a<<30)^(a>>>13|a<<19)^(a>>>22|a<<10))+((a&b)^(a&c)^(b&c)))|0;
+        h=g;g=f;f=e;e=(d+t1)|0;d=c;c=b;b=a;a=(t1+t2)|0;
+      }
+      H[0]=(H[0]+a)|0;H[1]=(H[1]+b)|0;H[2]=(H[2]+c)|0;H[3]=(H[3]+d)|0;H[4]=(H[4]+e)|0;H[5]=(H[5]+f)|0;H[6]=(H[6]+g)|0;H[7]=(H[7]+h)|0;
+    }
+    return H.map(v=>(v>>>0).toString(16).padStart(8,'0')).join('');
+  };
+})();
+
+/* ---------- sound (synthesized with Web Audio; no files) ---------- */
+const SFX=(()=>{
+  let ctx=null,on=true;
+  try{on=localStorage.getItem('beatEve.sound')!=='off';}catch(e){}
+  function ac(){
+    if(!ctx){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;ctx=new C();}
+    if(ctx.state==='suspended')ctx.resume();
+    return ctx;
+  }
+  function tone(f,t0,dur,type,vol,f2){
+    const c=ac();if(!c)return;
+    const o=c.createOscillator(),g=c.createGain(),t=c.currentTime+t0;
+    o.type=type||'sine';o.frequency.setValueAtTime(f,t);
+    if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+    g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol||.06,t+.012);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+dur+.03);
+  }
+  const S={
+    click:()=>tone(880,0,.05,'triangle',.035),
+    lock:()=>{tone(330,0,.06,'square',.045);tone(247,.07,.1,'square',.045);},
+    hash:()=>{for(let i=0;i<5;i++)tone(620+i*150,i*.035,.05,'triangle',.03);},
+    send:()=>tone(280,0,.4,'sine',.06,1150),
+    alarm:()=>{for(let i=0;i<4;i++)tone(i%2?560:780,i*.15,.13,'sawtooth',.045);},
+    win:()=>[523,659,784,1047].forEach((f,i)=>tone(f,i*.1,.26,'triangle',.07)),
+    fail:()=>{tone(300,0,.28,'sawtooth',.05,150);tone(200,.25,.4,'sawtooth',.045,90);},
+    good:()=>{tone(660,0,.08,'triangle',.06);tone(990,.08,.16,'triangle',.06);},
+    bad:()=>tone(190,0,.22,'square',.045,120),
+    tick:()=>tone(1250,0,.025,'square',.02),
+    turn:()=>tone(430,0,.07,'triangle',.045,540),
+    coin:()=>{tone(988,0,.06,'square',.035);tone(1319,.06,.14,'square',.035);},
+    pour:()=>tone(240,0,.3,'sine',.05,95),
+    mine:()=>{for(let i=0;i<3;i++)tone(150+i*40,i*.05,.05,'square',.03);},
+  };
+  return {play(n){if(on&&S[n]){try{S[n]();}catch(e){}}},get on(){return on;},toggle(){on=!on;try{localStorage.setItem('beatEve.sound',on?'on':'off');}catch(e){}if(on)S.click();return on;}};
+})();
+
 /* ---------- progress ---------- */
 const STORE='beatEve.progress.v1';
 let progress={};
@@ -288,8 +440,87 @@ function award(id,n){
   if((progress[id]||0)<n){progress[id]=n;try{localStorage.setItem(STORE,JSON.stringify(progress));}catch(e){}}
   drawStarCount();
 }
-function totalStars(){return Object.values(progress).reduce((a,b)=>a+b,0);}
-function drawStarCount(){$('#starCount').innerHTML=`${ICON.star(true)} ${totalStars()} / 27`;}
+function totalStars(){return Object.keys(MISSIONS).reduce((a,id)=>a+(progress[id]||0),0);}
+function drawStarCount(){$('#starCount').innerHTML=`${ICON.star(true)} ${totalStars()} / ${Object.keys(MISSIONS).length*3}`;}
+let studentName='';
+try{studentName=localStorage.getItem('beatEve.name')||'';}catch(e){}
+function setName(n){studentName=String(n||'').trim().slice(0,60);try{localStorage.setItem('beatEve.name',studentName);}catch(e){}}
+
+/* ---------- completion codes ----------
+   A code is a keyed checksum of (student name, mission, stars), like an HMAC.
+   The key lives in this page, so it stops casual copying between students, not a determined forger. */
+const CODE_KEY='wire-room|beat-eve|2026';
+const B32='0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+const normName=n=>String(n||'').trim().toLowerCase().replace(/\s+/g,' ');
+function checksum(s){let n=parseInt(sha256(CODE_KEY+'|'+s).slice(0,8),16),out='';for(let i=0;i<6;i++){out+=B32[n%32];n=Math.floor(n/32);}return out;}
+const missionNo=id=>String(Object.keys(MISSIONS).indexOf(id)+1).padStart(2,'0');
+function missionCode(name,id,stars){const no=missionNo(id);return `M${no}-${stars}-${checksum(normName(name)+'|'+no+'|'+stars)}`;}
+function reportCode(name){const s=Object.keys(MISSIONS).map(id=>progress[id]||0).join('');return `R-${s}-${checksum(normName(name)+'|R|'+s)}`;}
+function verifyCode(name,code){
+  code=String(code||'').trim().toUpperCase().replace(/\s+/g,'');
+  const ids=Object.keys(MISSIONS);
+  let m=code.match(/^M(\d\d)-([0-3])-([0-9A-Z]{6})$/);
+  if(m){
+    const id=ids[+m[1]-1];
+    if(!id) return {ok:false,text:'That mission number doesn’t exist.'};
+    const ok=checksum(normName(name)+'|'+m[1]+'|'+m[2])===m[3];
+    return {ok,text:ok?`Valid. Mission ${+m[1]}, ${MISSIONS[id].title}: ${m[2]} star${m[2]==='1'?'':'s'}.`:'Not valid for this name. Check the spelling of the name and the code.'};
+  }
+  m=code.match(/^R-([0-3]+)-([0-9A-Z]{6})$/);
+  if(m){
+    const ok=m[1].length===ids.length&&checksum(normName(name)+'|R|'+m[1])===m[2];
+    if(!ok) return {ok,text:'Not valid for this name. Check the spelling of the name and the code.'};
+    const total=[...m[1]].reduce((a,c)=>a+ +c,0), done=[...m[1]].filter(c=>c!=='0').length;
+    return {ok,text:`Valid report card. ${done} of ${ids.length} missions complete, ${total} of ${ids.length*3} stars.`,
+      detail:ids.map((id,i)=>`<li>${i+1}. ${MISSIONS[id].title}: ${m[1][i]}★</li>`).join('')};
+  }
+  return {ok:false,text:'That doesn’t look like a Beat Eve code. Mission codes look like M03-2-ABC123, report cards like R-3320…-ABC123.'};
+}
+async function copyText(text,el){
+  try{await navigator.clipboard.writeText(text);toast('Copied.');}
+  catch(e){if(el){const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r);}toast('Copy isn’t available here. The code is selected, so press Ctrl+C (or ⌘C).');}
+}
+function codeBlock(id,stars){
+  if(!studentName) return `<div class="codebox"><label class="lbl" for="nameIn">Your name, for your completion code</label>
+    <div class="row"><input id="nameIn" class="inp" autocomplete="name" placeholder="First and last name"><button type="button" class="btn" id="nameSave">Get my code</button></div></div>`;
+  const code=missionCode(studentName,id,stars);
+  return `<div class="codebox"><span class="lbl">Completion code for ${esc(studentName)}</span>
+    <div class="row"><code class="code" id="codeOut">${code}</code><button type="button" class="btn sm" id="codeCopy">Copy</button></div>
+    <small class="muted">Paste this where your teacher asks. It’s tied to your name and this score.</small></div>`;
+}
+function wireCodeBlock(id,stars){
+  const c=$('#modalCard'), save=$('#nameSave',c), inp=$('#nameIn',c);
+  if(save){
+    const go=()=>{if(!inp.value.trim()){inp.focus();return;}setName(inp.value);const box=$('.codebox',c);box.outerHTML=codeBlock(id,stars);wireCodeBlock(id,stars);SFX.play('coin');};
+    save.onclick=go; inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();go();}};
+  }
+  const cp=$('#codeCopy',c); cp&&(cp.onclick=()=>copyText($('#codeOut',c).textContent,$('#codeOut',c)));
+}
+
+/* ---------- characters ---------- */
+const NAMES={alice:'Alice',bob:'Bob',eve:'Eve',mallory:'Mallory',trent:'Trent'};
+const CAST={
+  alice:{tone:'var(--k-alice)',skin:'#E7B28C',hair:'#3A2317'},
+  bob:{tone:'var(--k-bob)',skin:'#8A5536',hair:'#1D1310'},
+  eve:{tone:'var(--eve)',skin:'#C98D69',hair:'#2A1C22'},
+  mallory:{tone:'var(--k-mal)',skin:'#EFC6A4',hair:'#4A3A2C'},
+  trent:{tone:'var(--k-ca)',skin:'#B97C56',hair:'#A9B0BA'},
+};
+let PID=0;
+function portrait(who,cls='pt'){
+  const c=CAST[who],id='pc'+(++PID),S=c.skin,Hc=c.hair,T=c.tone;
+  const eyes=who==='mallory'?`<path d="M26 29.5h4M34 29.5h4" stroke="#1B1B22" stroke-width="1.8" stroke-linecap="round"/>`:`<circle cx="28" cy="29" r="1.5" fill="#1B1B22"/><circle cx="36" cy="29" r="1.5" fill="#1B1B22"/>`;
+  const mouth=who==='eve'||who==='mallory'?`<path d="M28.5 35 Q33 37 36 34" fill="none" stroke="#6B3A2A" stroke-width="1.4" stroke-linecap="round"/>`:`<path d="M28.5 34.2 Q32 37 35.5 34.2" fill="none" stroke="#6B3A2A" stroke-width="1.4" stroke-linecap="round"/>`;
+  let back='',front='',body=`<path d="M7 66C7 50 18 44 32 44S57 50 57 66Z" fill="${T}"/>`,extra='';
+  if(who==='alice'){back=`<path d="M19 30C17 13 47 13 45 30L47 42C40 45 24 45 17 42Z" fill="${Hc}"/>`;front=`<path d="M20.5 25C23 13 42 12 44 25C38 19.5 28 19.5 20.5 25Z" fill="${Hc}"/>`;}
+  if(who==='bob'){front=`<path d="M20.5 26C20 12 44 12 43.5 26C41 18.5 23 18.5 20.5 26Z" fill="${Hc}"/><path d="M21.5 31C23 43 41 43 42.5 31C39 38 25 38 21.5 31Z" fill="${Hc}"/>`;}
+  if(who==='eve'){back=`<path d="M13 46C11 17 22 9 32 9S53 17 51 46Z" fill="${T}"/>`;extra=`<path d="M18.5 28C18.5 11 45.5 11 45.5 28" fill="none" stroke="#231B2B" stroke-width="3"/><rect x="15" y="24" width="6.5" height="11" rx="2.5" fill="#231B2B"/><rect x="42.5" y="24" width="6.5" height="11" rx="2.5" fill="#231B2B"/>`;front=`<path d="M21 23C24 16 40 16 43 23C37 20 27 20 21 23Z" fill="${Hc}"/>`;}
+  if(who==='mallory'){extra=`<ellipse cx="32" cy="20" rx="19" ry="3.6" fill="#25252D"/><path d="M22.5 20C22 8 42 8 41.5 20Z" fill="#25252D"/><rect x="22.5" y="16.5" width="19" height="2.6" fill="${T}"/>`;body=`<path d="M7 66C7 50 18 44 32 44S57 50 57 66Z" fill="#4B4458"/><path d="M24 44L32 58L40 44L36 43L32 50L28 43Z" fill="${T}"/>`;}
+  if(who==='trent'){front=`<path d="M20.5 27C19.5 15 44.5 15 43.5 27C42 22.5 39 21 36 21C33 18.8 28 19.2 25 21.5C23 22.5 21.5 24.5 20.5 27Z" fill="${Hc}"/>`;extra=`<circle cx="28" cy="29" r="3.4" fill="none" stroke="#2A3246" stroke-width="1.3"/><circle cx="36" cy="29" r="3.4" fill="none" stroke="#2A3246" stroke-width="1.3"/><path d="M31.4 29h1.2" stroke="#2A3246" stroke-width="1.3"/>`;body=`<path d="M7 66C7 50 18 44 32 44S57 50 57 66Z" fill="#2E3C58"/><path d="M26.5 44L32 55L37.5 44Z" fill="#EEF1F5"/><path d="M31 47h2l1.2 9-2.2 3-2.2-3Z" fill="${T}"/>`;}
+  return `<svg class="${cls}" viewBox="0 0 64 64" role="img" aria-label="${NAMES[who]}"><defs><clipPath id="${id}"><circle cx="32" cy="32" r="31"/></clipPath></defs>
+    <circle cx="32" cy="32" r="31" fill="${T}" fill-opacity=".18" stroke="${T}" stroke-width="2"/>
+    <g clip-path="url(#${id})">${back}${body}<rect x="27" y="36" width="10" height="10" fill="${S}"/><ellipse cx="32" cy="28.5" rx="11" ry="12.5" fill="${S}"/>${eyes}${mouth}${front}${extra}</g></svg>`;
+}
 
 /* ---------- icons ---------- */
 const ICON={
@@ -298,7 +529,8 @@ const ICON={
   doc:()=>`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2.5h8l4.5 4.5v14.5H6z" fill="var(--panel)" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 2.5V7h4.5M8.5 11h7M8.5 14h7M8.5 17h5" fill="none" stroke="var(--muted)" stroke-width="1.4"/></svg>`,
   hash:()=>`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="4" fill="var(--panel)" stroke="var(--accent)" stroke-width="1.8"/><path d="M9.5 6.5l-1.6 11M15.9 6.5l-1.6 11M6.5 10h11.5M6 14h11.5" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/></svg>`,
   lock:(c,open)=>`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="${open?'M7.5 10V7a4.5 4.5 0 0 1 8.7-1.6':'M7.5 10V7a4.5 4.5 0 0 1 9 0v3'}" fill="none" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/><rect x="4.5" y="10" width="15" height="11" rx="2.5" fill="${c}"/><circle cx="12" cy="15.5" r="1.8" fill="var(--panel)"/></svg>`,
-  eve:()=>`<svg class="evebug" viewBox="0 0 34 26" aria-hidden="true"><path d="M2 13C8 3 26 3 32 13C26 23 8 23 2 13Z" fill="var(--eve-soft)" stroke="var(--eve)" stroke-width="2.2"/><circle cx="17" cy="13" r="5" fill="var(--eve)"/></svg>`
+  eve:()=>`<svg class="evebug" viewBox="0 0 34 26" aria-hidden="true"><path d="M2 13C8 3 26 3 32 13C26 23 8 23 2 13Z" fill="var(--eve-soft)" stroke="var(--eve)" stroke-width="2.2"/><circle cx="17" cy="13" r="5" fill="var(--eve)"/></svg>`,
+  sound:on=>`<svg viewBox="0 0 24 24" aria-hidden="true" style="width:20px;height:20px"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="var(--ink)"/>${on?'<path d="M15 9a4 4 0 0 1 0 6M17.5 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round"/>':'<path d="M15.5 9.5l5 5M20.5 9.5l-5 5" stroke="var(--bad)" stroke-width="1.8" stroke-linecap="round"/>'}</svg>`
 };
 const starsHTML=(n,cls='stars')=>`<span class="${cls}">${[1,2,3].map(i=>ICON.star(i<=n)).join('')}</span>`;
 
@@ -318,14 +550,16 @@ function toast(msg,ms=4200){
   clearTimeout(toastT); toastT=setTimeout(()=>t.remove(),ms);
 }
 function endMission(id,stars,title,takeaways,extra=''){
-  award(id,stars);
+  award(id,stars); SFX.play('win');
   const order=Object.keys(MISSIONS), next=order[order.indexOf(id)+1];
   modal({title,tone:'win',
-    html:`<div class="bigstars">${[1,2,3].map(i=>ICON.star(i<=stars).replace('width:18px;height:18px','width:40px;height:40px')).join('')}</div>${extra}<p class="lbl">Exam-ready takeaways</p><ul>${takeaways.map(t=>`<li>${t}</li>`).join('')}</ul>`,
-    actions:[{label:'Mission board',fn:home},{label:'Play again',fn:()=>open(id)},...(next?[{label:'Next mission',primary:true,fn:()=>open(next)}]:[])]});
+    html:`<div class="bigstars">${[1,2,3].map(i=>ICON.star(i<=stars).replace('width:18px;height:18px','width:40px;height:40px')).join('')}</div>${extra}${codeBlock(id,stars)}<p class="lbl">Exam-ready takeaways</p><ul>${takeaways.map(t=>`<li>${t}</li>`).join('')}</ul>`,
+    actions:[{label:'Mission board',fn:home},{label:'Play again',fn:()=>open(id,true)},...(next?[{label:'Next mission',primary:true,fn:()=>open(next)}]:[])]});
+  wireCodeBlock(id,stars);
 }
 function failMission(id,title,html){
-  modal({title,tone:'fail',html,actions:[{label:'Mission board',fn:home},{label:'Try again',primary:true,fn:()=>open(id)}]});
+  SFX.play('alarm');
+  modal({title,tone:'fail',html,actions:[{label:'Mission board',fn:home},{label:'Try again',primary:true,fn:()=>open(id,true)}]});
 }
 
 /* ---------- missions registry ---------- */
@@ -333,71 +567,120 @@ const CHAPTERS=[
   {n:'Chapter I',title:'The Courier',slides:'Slides 7–12, 19–21',ids:['m1','m2','m3']},
   {n:'Chapter II',title:'Agree, Don’t Send',slides:'Slides 9, 22',ids:['m4','m5','m6']},
   {n:'Chapter III',title:'Who’s Really Bob?',slides:'Slides 32–40',ids:['m7','m8','m9']},
+  {n:'Chapter IV',title:'Eve’s Toolkit',slides:'Slides 23–25, 27–30',ids:['m11','m12','m13']},
 ];
 const MISSIONS={
-  m1:{title:'Shared Secret',tag:'Symmetric encryption · slide 7',blurb:'Bob already has your shared key. Get a note to him without Eve reading it.',run:()=>courier('m1')},
-  m2:{title:'The Big File',tag:'Hybrid key exchange · slides 19–21',blurb:'You’ve never met Bob and the file is 2 GB. Rebuild the six-step key exchange yourself.',run:()=>courier('m2')},
-  m3:{title:'Sign It',tag:'Digital signatures · slides 10–12',blurb:'Eve can read it. That’s fine. Bob needs proof it’s really from you.',run:()=>courier('m3')},
-  m4:{title:'Paint Lab',tag:'Diffie-Hellman idea · slide 22',blurb:'Make the same secret color as Bob without ever sending it. Then try to steal it as Eve.',run:paintLab},
-  m5:{title:'Clock Math',tag:'DH with real numbers · slides 9, 22',blurb:'Turn the mod-23 dial. Agree on a key, then race to crack one as Eve.',run:clockMath},
-  m6:{title:'Breach Day',tag:'Perfect forward secrecy · slide 22',blurb:'Eve records everything, then steals your server key. Which sessions survive?',run:breachDay},
-  m7:{title:'Get Certified',tag:'CSR, CA, RA, chain · slides 33–38',blurb:'Walk a certificate from key pair to root of trust.',run:getCertified},
-  m8:{title:'Checkpoint',tag:'Validate certificates · slides 33–40',blurb:'You’re the browser. Ten certificates. Trust or block, against the clock.',run:checkpoint},
-  m9:{title:'Mallory in the Middle',tag:'Boss: everything at once',blurb:'Pick Bob’s real key, then send a file that is secret and signed.',run:()=>courier('m9')},
+  m1:{title:'Shared Secret',face:'bob',tag:'Symmetric encryption · slide 7',blurb:'Bob already has your shared key. Get a note to him without Eve reading it.',run:()=>courier('m1')},
+  m2:{title:'The Big File',face:'bob',tag:'Hybrid key exchange · slides 19–21',blurb:'You’ve never met Bob and the file is 2 GB. Rebuild the six-step key exchange yourself.',run:()=>courier('m2')},
+  m3:{title:'Sign It',face:'eve',tag:'Digital signatures · slides 10–12',blurb:'Eve can read it. That’s fine. Bob needs proof it’s really from you.',run:()=>courier('m3')},
+  m4:{title:'Paint Lab',face:'trent',tag:'Diffie-Hellman idea · slide 22',blurb:'Make the same secret color as Bob without ever sending it. Then try to steal it as Eve.',run:paintLab},
+  m5:{title:'Clock Math',face:'bob',tag:'DH with real numbers · slides 9, 22',blurb:'Turn the mod-23 dial. Agree on a key, then race to crack one as Eve.',run:clockMath},
+  m6:{title:'Breach Day',face:'eve',tag:'Perfect forward secrecy · slide 22',blurb:'Eve records everything, then steals your server key. Which sessions survive?',run:breachDay},
+  m7:{title:'Get Certified',face:'trent',tag:'CSR, CA, RA, chain · slides 33–38',blurb:'Walk a certificate from key pair to root of trust.',run:getCertified},
+  m8:{title:'Checkpoint',face:'mallory',tag:'Validate certificates · slides 33–40',blurb:'You’re the browser. Ten certificates. Trust or block, against the clock.',run:checkpoint},
+  m9:{title:'Mallory in the Middle',face:'mallory',tag:'Boss: everything at once',blurb:'Pick Bob’s real key, then send a file that is secret and signed.',run:()=>courier('m9')},
+  m11:{title:'Chain Breaker',face:'eve',tag:'Blockchain · slide 27',blurb:'Change one payment in a public ledger. Try to cover your tracks before the network notices.',run:chainBreaker},
+  m12:{title:'Hide in Plain Sight',face:'eve',tag:'Obfuscation · slides 24–25',blurb:'Find a message hidden inside a photo, then sort steganography, tokenization and masking.',run:hideInPlainSight},
+  m13:{title:'Vault Keeper',face:'trent',tag:'Key escrow, KMS, TPM, HSM · slides 23, 29–30',blurb:'Every key needs a home and a life plan. Put each one where it belongs.',run:vaultKeeper},
 };
-function open(id){
+
+/* ---------- story briefings (shown before each mission) ---------- */
+const BRIEFS={
+  m1:[['trent','Welcome to the Wire Room, Alice. We move secrets for people, and every message we move crosses public wire.'],['eve','And I copy all of it. Every packet. I never delete anything.'],['trent','Bob is our field agent. You two swapped a secret key in person last week, so we’ll start easy. Get tonight’s meeting spot to him.'],['alice','Lock it, send it. How hard can it be?']],
+  m2:[['bob','Alice! I’m in Lisbon with a new partner. I need the project files, all 2 GB of them.'],['alice','We’ve never met, Bob. We don’t have a shared key.'],['trent','You do have Bob’s public key from his certificate. Asymmetric encryption is slow. Symmetric is fast. You’ll need both.'],['eve','Take your time. I’m not going anywhere.']],
+  m3:[['trent','The press release goes public at noon. Eve can read it. Everyone can.'],['eve','Then I might just… change a number or two on the way through.'],['bob','Which means I need proof it came from Alice, and that nobody touched it.'],['trent','That’s a digital signature. Hash first, then sign.']],
+  m4:[['trent','Every key so far has crossed the wire inside a locked box. If Eve ever steals Bob’s private key, every box she recorded opens.'],['eve','I’m patient. I have hard drives.'],['trent','So today, no key crosses the wire at all. Grab an apron.'],['alice','An apron?'],['trent','We’re mixing paint.']],
+  m5:[['trent','Paint was the idea. Computers do the same thing with clock math.'],['bob','Pick a secret number of turns. Don’t tell me what it is.'],['eve','Numbers? I love numbers. Let me know when you want me to crack one.']],
+  m6:[['trent','Bad news from across town. Eve recorded a year of another firm’s traffic, then stole their server’s private key.'],['eve','Best Friday of my life.'],['trent','Let’s see what that would do to us. Then we’ll fix it.']],
+  m7:[['mallory','Hi. I’m Mallory. Eve listens. I talk. I can hand you any public key and swear it’s Bob’s.'],['trent','Which is why I run a certificate authority. I check who you are, then sign a certificate that says so.'],['alice','So how does quokkabank.com get one of your certificates?'],['trent','Let’s walk it through.']],
+  m8:[['trent','You’re the browser now. Ten sites, 45 seconds each.'],['mallory','Some of my certificates are very convincing.'],['trent','Check the dates, the name, the chain, the revocation status and the signature. Every time.']],
+  m9:[['bob','Merger plan. The board meets in an hour. For my eyes only.'],['mallory','Three keys just arrived, all claiming to be Bob’s. Only one of them is. Good luck.'],['trent','Everything you’ve learned, all at once. Make me proud.']],
+  m11:[['trent','The Wire Room keeps a public ledger of every payment. Anyone can read it. Hundreds of peers keep a copy.'],['eve','I’d like to change one line. Alice paid Bob 5. I think she paid me 500.'],['trent','Each block carries the hash of the block before it. Go ahead and try.']],
+  m12:[['eve','Encryption announces that you have a secret. Sometimes I’d rather nobody knew there was a secret at all.'],['trent','That’s obfuscation. One of Eve’s couriers posted a harbor photo this morning.'],['alice','It looks like… a harbor.'],['trent','Look closer. Look at the bits.']],
+  m13:[['trent','Last lesson, Alice. Keys have lives. They’re born, they work, they retire, they’re destroyed.'],['alice','And in between they need somewhere safe to live?'],['trent','Several kinds of somewhere. Let’s put each key in its vault.']],
+};
+function brief(id){
+  const lines=BRIEFS[id];
+  screen.innerHTML=shell(id)+`<div class="brief">${lines.map(([who,t],i)=>`<div class="line ${who==='alice'?'me':''}" style="animation-delay:${i*0.45}s">${portrait(who)}<div class="bubble" style="--c:${CAST[who].tone}"><b>${NAMES[who]}</b><p>${t}</p></div></div>`).join('')}</div>
+    <div class="choices" style="margin-top:18px"><button type="button" class="btn primary" id="goBtn">Start mission</button></div>`;
+  wireHome();
+  $('#goBtn').onclick=()=>{SFX.play('click');window.scrollTo(0,0);MISSIONS[id].run();};
+  $('#goBtn').focus({preventScroll:true});
+}
+
+function open(id,skipBrief){
   if(cleanup){cleanup();cleanup=null;}
   current=id; $('#modal').hidden=true; const t=$('.toast'); t&&t.remove();
   window.scrollTo(0,0);
   if(id==='home') return home();
+  if(!skipBrief&&BRIEFS[id]) return brief(id);
   MISSIONS[id].run();
 }
 function home(){
   if(cleanup){cleanup();cleanup=null;}
   current='home'; $('#modal').hidden=true; const t=$('.toast'); t&&t.remove();
+  const nMissions=Object.keys(MISSIONS).length;
   screen.innerHTML=`
   <section class="hero">
     <div>
-      <p class="lbl">Security+ Chapter 2 · Key exchange</p>
+      <p class="lbl">Security+ Chapter 2 · Cryptography</p>
       <h1>BEAT<br><span>EVE</span></h1>
       <p>Eve copies every packet on the wire. Your job is to get secrets to Bob anyway, using the same moves real protocols use.</p>
       <div class="cta"><button class="btn primary" type="button" data-open="m1">Start mission 1</button><button class="btn" type="button" data-open="m8">Jump to Checkpoint</button></div>
     </div>
     <div class="stage" aria-label="Alice sends a locked box to Bob while Eve taps the wire">
-      <svg viewBox="0 0 420 200" role="img" aria-label="Alice, the wire, Eve and Bob">
-        <line x1="60" y1="70" x2="360" y2="70" stroke="var(--line)" stroke-width="4" stroke-dasharray="10 6"/>
-        <line x1="210" y1="72" x2="210" y2="128" stroke="var(--eve)" stroke-width="2.5"/>
-        <circle cx="46" cy="70" r="26" fill="var(--panel2)" stroke="var(--k-alice)" stroke-width="3"/>
-        <text x="46" y="76" text-anchor="middle" font-family="Chakra Petch, sans-serif" font-weight="700" font-size="18" fill="var(--k-alice)">A</text>
-        <circle cx="374" cy="70" r="26" fill="var(--panel2)" stroke="var(--k-bob)" stroke-width="3"/>
-        <text x="374" y="76" text-anchor="middle" font-family="Chakra Petch, sans-serif" font-weight="700" font-size="18" fill="var(--k-bob)">B</text>
-        <path d="M176 150C190 128 230 128 244 150C230 172 190 172 176 150Z" fill="var(--eve-soft)" stroke="var(--eve)" stroke-width="2.5"/>
-        <circle cx="210" cy="150" r="8" fill="var(--eve)"/>
-        <text x="210" y="192" text-anchor="middle" font-family="Chakra Petch, sans-serif" font-size="14" fill="var(--muted)">Eve copies everything</text>
-        <g><rect x="-13" y="-13" width="26" height="26" rx="5" fill="var(--k-shared)"/><circle cx="0" cy="2" r="3.5" fill="var(--panel)"/>
-          <animateTransform attributeName="transform" type="translate" values="80 70;340 70" dur="3.2s" repeatCount="indefinite"/></g>
-        <text x="46" y="122" text-anchor="middle" font-family="Chakra Petch, sans-serif" font-size="14" fill="var(--muted)">Alice (you)</text>
-        <text x="374" y="122" text-anchor="middle" font-family="Chakra Petch, sans-serif" font-size="14" fill="var(--muted)">Bob</text>
-      </svg>
+      <div class="stage-row">
+        <div class="who"><div class="pt-lg">${portrait('alice')}</div><span>Alice (you)</span></div>
+        <div class="stage-wire"><span class="wire-dash"></span><span class="packet">${ICON.key('var(--panel)').replace('class="ic"','class="ic" style="width:16px;height:16px"')}</span></div>
+        <div class="who"><div class="pt-lg">${portrait('bob')}</div><span>Bob</span></div>
+      </div>
+      <div class="who eve-tap"><span class="tap-line"></span><div class="pt-lg">${portrait('eve')}</div><span>Eve copies everything</span></div>
     </div>
   </section>
   <section class="cast" aria-label="Cast">
-    <div style="--c:var(--k-alice)"><b>Alice</b><small>You. The sender.</small></div>
-    <div style="--c:var(--k-bob)"><b>Bob</b><small>The recipient. Only he holds Bob’s private key.</small></div>
-    <div style="--c:var(--eve)"><b>Eve</b><small>Eavesdropper. Reads and keeps everything on the wire.</small></div>
-    <div style="--c:var(--k-mal)"><b>Mallory</b><small>Active attacker. Can swap keys and forge certificates.</small></div>
+    ${[['alice','You. A new courier at the Wire Room.'],['bob','Field agent. Only he holds Bob’s private key.'],['trent','Your mentor. Runs the certificate authority.'],['eve','Eavesdropper. Reads and keeps everything on the wire.'],['mallory','Active attacker. Swaps keys and forges certificates.']]
+      .map(([w,d])=>`<div style="--c:${CAST[w].tone}">${portrait(w)}<span><b>${NAMES[w]}</b><small>${d}</small></span></div>`).join('')}
   </section>
   ${CHAPTERS.map(ch=>`
   <section class="chapter">
     <div class="chapter-head"><span class="num">${ch.n.toUpperCase()}</span><h2>${ch.title}</h2><span class="slides">${ch.slides}</span></div>
-    <div class="tiles">${ch.ids.map((id,i)=>{const m=MISSIONS[id];return `
+    <div class="tiles ${ch.ids.length===4?'four':''}">${ch.ids.map(id=>{const m=MISSIONS[id];return `
       <button class="tile" type="button" data-open="${id}">
         <span class="row"><span class="tag">MISSION ${Object.keys(MISSIONS).indexOf(id)+1}</span>${starsHTML(progress[id]||0)}</span>
-        <h3>${m.title}</h3><p>${m.blurb}</p><span class="tag">${m.tag}</span>
+        <span class="tile-top">${portrait(m.face,'pt tile-pt')}<h3>${m.title}</h3></span><p>${m.blurb}</p><span class="tag">${m.tag}</span>
       </button>`;}).join('')}</div>
   </section>`).join('')}
-  <p class="teacher"><b>For teachers:</b> each mission cites the Chapter 2 slides it covers and ends with exam-ready takeaways. Progress is saved in each student’s own browser. Missions run in order but any can be opened directly. Checkpoint generates a new set of certificates every play, so it works well as a repeatable warm-up or a class competition.</p>`;
-  $$('[data-open]',screen).forEach(b=>b.onclick=()=>open(b.dataset.open));
+  <section class="report card" aria-labelledby="rcTitle">
+    <div class="chapter-head"><h2 id="rcTitle">Report card</h2><span class="slides">${totalStars()} of ${nMissions*3} stars</span></div>
+    <div class="rc-grid">
+      <div>
+        <label class="lbl" for="rcName">Your name</label>
+        <div class="row"><input id="rcName" class="inp" autocomplete="name" placeholder="First and last name" value="${esc(studentName)}"><button type="button" class="btn" id="rcSave">Save</button></div>
+        <p class="muted" style="font-size:14px">Your name is stored only in this browser. It’s used to make completion codes your teacher can check.</p>
+        ${studentName?`<span class="lbl">Report card code</span><div class="row"><code class="code" id="rcCode">${reportCode(studentName)}</code><button type="button" class="btn sm" id="rcCopy">Copy</button></div>
+          <p class="muted" style="font-size:14px">One code for every mission and your best stars. Submit it at the end of the unit.</p>`:''}
+      </div>
+      <ol class="rc-list">${Object.keys(MISSIONS).map((id,i)=>`<li><span>${i+1}. ${MISSIONS[id].title}</span>${starsHTML(progress[id]||0)}</li>`).join('')}</ol>
+    </div>
+  </section>
+  <div class="teacher"><p><b>For teachers:</b> each mission opens with a short story briefing, cites the Chapter 2 slides it covers, and ends with exam-ready takeaways and a completion code tied to the student’s name. Progress lives only in each student’s browser. Checkpoint deals a new set of certificates every play, so it works as a repeatable warm-up or class competition.</p>
+    <button type="button" class="btn" id="verifyBtn">Check a student’s code</button></div>`;
+  $$('[data-open]',screen).forEach(b=>b.onclick=()=>{SFX.play('click');open(b.dataset.open);});
+  const saveName=()=>{const v=$('#rcName').value;if(!v.trim()){$('#rcName').focus();return;}setName(v);SFX.play('coin');home();const el=$('#rcName');el&&el.scrollIntoView({block:'center'});};
+  $('#rcSave').onclick=saveName; $('#rcName').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();saveName();}};
+  const rc=$('#rcCopy'); rc&&(rc.onclick=()=>copyText($('#rcCode').textContent,$('#rcCode')));
+  $('#verifyBtn').onclick=teacherVerify;
+}
+function teacherVerify(){
+  modal({title:'Check a student’s code',tone:'info',html:`<p class="muted">Enter the name exactly as the student typed it (capital letters and extra spaces don’t matter) and the code they submitted.</p>
+    <div class="vf"><label class="lbl" for="vfName">Student name</label><input id="vfName" class="inp" autocomplete="off">
+    <label class="lbl" for="vfCode">Code</label><input id="vfCode" class="inp mono" autocomplete="off" placeholder="M03-2-ABC123 or R-…">
+    <button type="button" class="btn primary" id="vfGo">Check</button><div id="vfOut" aria-live="polite"></div></div>`,
+    actions:[{label:'Close'}]});
+  const go=()=>{const r=verifyCode($('#vfName').value,$('#vfCode').value);SFX.play(r.ok?'good':'bad');
+    $('#vfOut').innerHTML=`<div class="explain" style="border-color:${r.ok?'var(--good)':'var(--bad)'}"><b>${r.ok?'✓':'✗'}</b> ${esc(r.text)}${r.detail?`<ul class="rc-mini">${r.detail}</ul>`:''}</div>`;};
+  $('#vfGo').onclick=go; $('#vfCode').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();go();}};
+  $('#vfName').focus();
 }
 function shell(id,kicker,story){
   const m=MISSIONS[id];
@@ -500,6 +783,7 @@ function bossPick(cfg){
   wireHome();
   $$('.picker .cert',screen).forEach(el=>{
     const go=()=>{
+      SFX.play('click');
       const o=opts[+el.dataset.i];
       const inv=[Msg('Merger plan (1 GB)',true),Key('S'),Key(o.real?'Bpub':'Mpub'),Key('Apriv')];
       const eve=['Bpub','Apub','Mpub'].concat(o.real?[]:['Mpriv']);
@@ -546,18 +830,18 @@ function runBench(id,cfg,inv,eveKeys,opt){
       <button class="btn sm ghost" type="button" id="resetBtn">Start over</button></div>
     ${st.hint?`<div class="hintbox">${cfg.hints.slice(0,st.hint).map((h,i)=>`<div><b>Hint ${i+1}.</b> ${h}</div>`).join('')}</div>`:''}
     <div class="bench">
-      <section class="panel" aria-label="Alice's desk"><h3><span class="dot" style="--c:var(--k-alice)"></span>Your desk (Alice)</h3>
+      <section class="panel" aria-label="Alice's desk"><h3>${portrait('alice')}Your desk (Alice)</h3>
         <div class="items">${st.inv.map(it=>`<div class="deskitem ${st.sel===it.uid?'sel':''}" role="button" tabindex="0" aria-pressed="${st.sel===it.uid}" data-uid="${it.uid}">${card(it,null,'alice')}${st.sent.includes(it)?'<span class="sentmark">Sent to Bob</span>':''}</div>`).join('')}</div>
         <div class="actions">${sel?`
           <div class="row"><span class="lbl">Lock it with</span>${keysOnDesk.length?keysOnDesk.map(k=>{const tone=(opt.labels&&opt.labels[k.key])?'var(--k-bob)':KEYDEF[k.key].tone;return `<button type="button" class="keybtn" style="--kc:${tone}" data-lock="${k.key}">${ICON.key(tone)}${esc(kname(k.key))}</button>`;}).join(''):'<span class="empty">no other keys</span>'}</div>
           <div class="row"><button type="button" class="btn" id="hashBtn">Hash it</button><button type="button" class="btn primary" id="sendBtn">Send to Bob →</button></div>`
           :'<span class="empty">Tap an item on your desk to lock it, hash it or send it.</span>'}</div>
       </section>
-      <section class="panel" aria-label="The wire"><h3 class="evehead">The wire · ${villain}’s notebook</h3>
+      <section class="panel" aria-label="The wire"><h3 class="evehead">${portrait(villain==='Mallory'?'mallory':'eve')}The wire · ${villain}’s notebook</h3>
         <div class="pipe" id="pipe"><div class="line"></div><div class="endA" style="--c:var(--k-alice)"></div><div class="endB" style="--c:var(--k-bob)"></div><div class="tap"></div>${ICON.eve()}</div>
         <div class="items">${st.sent.length?st.sent.map(it=>card(it,eve,'eve')).join(''):`<span class="empty">${villain} has copied nothing yet.</span>`}</div>
       </section>
-      <section class="panel" aria-label="Bob's inbox"><h3><span class="dot" style="--c:var(--k-bob)"></span>Bob’s inbox</h3>
+      <section class="panel" aria-label="Bob's inbox"><h3>${portrait('bob')}Bob’s inbox</h3>
         <div class="items">${st.sent.length?st.sent.map(it=>card(it,bob,'bob')).join(''):'<span class="empty">Nothing received yet.</span>'}</div>
       </section>
     </div>
@@ -566,7 +850,7 @@ function runBench(id,cfg,inv,eveKeys,opt){
     $('#hintBtn').onclick=()=>{if(st.hint<cfg.hints.length){st.hint++;render();}};
     $('#resetBtn').onclick=()=>runBench(id,cfg,id==='m9'?[Msg('Merger plan (1 GB)',true),Key('S'),Key(opt.fake?'Mpub':'Bpub'),Key('Apriv')]:cfg.inv(),eveKeys,opt);
     $$('.deskitem',screen).forEach(el=>{
-      const f=()=>{if(st.busy)return;st.sel=st.sel===+el.dataset.uid?null:+el.dataset.uid;render();const again=$(`.deskitem[data-uid="${el.dataset.uid}"]`);again&&again.focus();};
+      const f=()=>{if(st.busy)return;SFX.play('click');st.sel=st.sel===+el.dataset.uid?null:+el.dataset.uid;render();const again=$(`.deskitem[data-uid="${el.dataset.uid}"]`);again&&again.focus();};
       el.onclick=f; el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f();}};
     });
     $$('[data-lock]',screen).forEach(b=>b.onclick=()=>lock(sel,b.dataset.lock));
@@ -577,23 +861,23 @@ function runBench(id,cfg,inv,eveKeys,opt){
     if(st.busy)return;
     const d=KEYDEF[k];
     if(d.type!=='sym'&&isBig(it)){
-      st.mistakes++;
+      st.mistakes++; SFX.play('bad');
       toast(`<b>Too big for ${esc(kname(k))}.</b> Asymmetric encryption is slow and meant for small data like keys or hashes. Use the fast symmetric key for large files.`);
       return;
     }
     if(it.kind==='key'&&KEYDEF[it.key].type==='priv'){
-      st.mistakes++;
+      st.mistakes++; SFX.play('bad');
       toast('<b>Leave your private key alone.</b> It never gets packaged up or sent anywhere, even locked.');
       return;
     }
-    const b=Box(k,it); st.inv.push(b); st.sel=b.uid;
+    const b=Box(k,it); st.inv.push(b); st.sel=b.uid; SFX.play('lock');
     st.log.push(`You locked “${short(it)}” with ${kname(k)}.`);
     render();
   }
   function hash(it){
     if(st.busy)return;
     if(it.kind==='hash'){toast('It’s already a digest. Hashing again doesn’t help here.');return;}
-    const h=Hash(it); st.inv.push(h); st.sel=h.uid;
+    const h=Hash(it); st.inv.push(h); st.sel=h.uid; SFX.play('hash');
     st.log.push(`You hashed “${short(it)}”. The digest is small and one-way.`);
     render();
   }
@@ -604,7 +888,7 @@ function runBench(id,cfg,inv,eveKeys,opt){
       return failMission(id,'You sent a private key',`<p>${esc(kname(it.key))} went out over the wire, and ${villain} copied it. Anyone holding it can now sign as you and open anything locked with your public key.</p><p><b>Rule:</b> a private key is kept secret and is never shared with anyone, including the person you trust.</p>`);
     }
     if(st.sent.includes(it)){toast('Bob already has that one.');return;}
-    st.busy=true;
+    st.busy=true; SFX.play('send');
     const pipe=$('#pipe'),p=document.createElement('div');
     p.className='packet'; pipe.appendChild(p);
     const bug=$('.evebug',pipe); setTimeout(()=>bug&&bug.classList.add('flash'),420);
@@ -634,7 +918,7 @@ function runBench(id,cfg,inv,eveKeys,opt){
       st.over=true;
       return failMission(id,`${villain} read your file`,`<p>“${esc(COURIER_MSG(st))}” reached ${villain} in a form ${villain} could read. Lock it before it goes on the wire.</p>`);
     }
-    if(last.kind==='box'&&last.lock==='Apub') toast('Only <b>your private key</b> opens a box locked with your public key, so Bob can’t open it. To prove something came from you, lock it with your <b>private</b> key.',6000);
+    if(last.kind==='box'&&last.lock==='Apub'){SFX.play('bad');} if(last.kind==='box'&&last.lock==='Apub') toast('Only <b>your private key</b> opens a box locked with your public key, so Bob can’t open it. To prove something came from you, lock it with your <b>private</b> key.',6000);
     if(last.kind==='box'&&last.lock==='Apriv'&&last.inner.kind!=='hash') toast('Anyone with your public key can open that box, so it isn’t secret.',5000);
     const ok={conf:hasMsg(bob)&&!hasMsg(eve),read:hasMsg(bob),sig:hasSig(bob)};
     if(cfg.goals.every(g=>ok[g])){
@@ -690,16 +974,17 @@ function paintLab(){
     }
     screen.innerHTML=shell('m4')+`<p class="story">You and Bob need the same secret color, but every can of paint you send, Eve copies. This is the idea behind <b>Diffie-Hellman key agreement</b>.</p>`+body;
     wireHome();
-    $$('[data-s]',screen).forEach(b=>b.onclick=()=>{st.a=SECRETS[+b.dataset.s];st.b=pick(SECRETS.filter(s=>s!==st.a));st.step=2;render();});
-    const sm=$('#sendMix'); sm&&(sm.onclick=()=>{st.step=3;render();});
+    $$('[data-s]',screen).forEach(b=>b.onclick=()=>{SFX.play('pour');st.a=SECRETS[+b.dataset.s];st.b=pick(SECRETS.filter(s=>s!==st.a));st.step=2;render();});
+    const sm=$('#sendMix'); sm&&(sm.onclick=()=>{SFX.play('send');st.step=3;render();});
     $$('[data-add]',screen).forEach(b=>b.onclick=()=>{
       const v=b.dataset.add;
-      if(v==='secret'){st.step=4;render();return;}
-      st.mistakes++;
+      if(v==='secret'){SFX.play('good');st.step=4;render();return;}
+      st.mistakes++; SFX.play('bad');
       toast(v==='common'?'Extra public yellow is something Eve could add too. Only your <b>secret</b> gives you something Eve doesn’t have.':'Your public mix is on the wire, so Eve has it too. Add something only <b>you</b> have.');
     });
     $$('[data-eve]',screen).forEach(b=>b.onclick=()=>{
       const v=b.dataset.eve;
+      SFX.play('pour');
       if(v==='x'){st.evePot=[];}else{st.evePot.push(v==='c'?COMMON.rgb:v==='a'?mix(COMMON.rgb,st.a.rgb):mix(COMMON.rgb,st.b.rgb));st.eveTries++;}
       render();
     });
@@ -761,22 +1046,23 @@ function clockMath(){
     }
     screen.innerHTML=shell('m5')+`<p class="story">Real Diffie-Hellman replaces paint with <b>modular arithmetic</b>: clock math, where numbers wrap around after p. Going forward around the dial is easy. Working backward from where it stopped to how many turns it took is the hard problem (the discrete logarithm).</p>`+body;
     wireHome();
-    const tu=$('#turn'); tu&&(tu.onclick=()=>{if(st.n>=22){toast('That’s a full lap. 22 turns brings the dial back to 1.');}st.hist.push(stepLine(st.v,g));st.v=st.v*g%p;st.n++;render();});
-    const li=$('#lockin'); li&&(li.onclick=()=>{while(st.b===st.n){st.b=rnd(3,19);}st.B=powmod(g,st.b,p);st.A=st.v;st.phase=2;st.hist=[];render();});
-    const t2=$('#turn2'); t2&&(t2.onclick=()=>{st.hist.push(stepLine(st.v2,st.B));st.v2=st.v2*st.B%p;st.k++;render();});
+    const tu=$('#turn'); tu&&(tu.onclick=()=>{SFX.play('turn');if(st.n>=22){toast('That’s a full lap. 22 turns brings the dial back to 1.');}st.hist.push(stepLine(st.v,g));st.v=st.v*g%p;st.n++;render();});
+    const li=$('#lockin'); li&&(li.onclick=()=>{SFX.play('send');while(st.b===st.n){st.b=rnd(3,19);}st.B=powmod(g,st.b,p);st.A=st.v;st.phase=2;st.hist=[];render();});
+    const t2=$('#turn2'); t2&&(t2.onclick=()=>{SFX.play('turn');st.hist.push(stepLine(st.v2,st.B));st.v2=st.v2*st.B%p;st.k++;render();});
     const l2=$('#lock2'); l2&&(l2.onclick=()=>{
       const bobKey=powmod(st.A,st.b,p);
       if(st.k!==st.n||st.v2!==bobKey){
-        st.mistakes++;
+        st.mistakes++; SFX.play('bad');
         toast(`Your dial says ${st.v2}, Bob’s says ${bobKey}. You need exactly ${st.n} turns of × ${st.B}, the same count as your secret. Try again.`,6000);
         st.v2=1;st.k=0;st.hist=[];render();return;
       }
+      SFX.play('good');
       modal({title:`Both got ${bobKey}`,tone:'win',html:`<p class="eq">You: B<sup>a</sup> mod p = ${st.B}<sup>${st.n}</sup> mod ${p} = ${st.v2}<br>Bob: A<sup>b</sup> mod p = ${st.A}<sup>${st.b}</sup> mod ${p} = ${bobKey}</p><p>Both equal g<sup>ab</sup> mod p. The shared key ${bobKey} was never sent. Bob’s secret was ${st.b}.</p><p>Next: be Eve and try to crack one.</p>`,
         actions:[{label:'Play Eve',primary:true,fn:()=>{st.phase=3;st.eveA=powmod(g,rnd(4,20),p);st.eveStart=performance.now();render();startTick();}}]});
     });
-    const et=$('#eturn'); et&&(et.onclick=()=>{st.eveV=st.eveV*g%p;st.eveN++;render();});
+    const et=$('#eturn'); et&&(et.onclick=()=>{SFX.play('turn');st.eveV=st.eveV*g%p;st.eveN++;render();});
     const ec=$('#ecall'); ec&&(ec.onclick=()=>{
-      if(st.eveV!==st.eveA){st.mistakes++;toast(`The dial shows ${st.eveV}, not ${st.eveA}. Keep turning.`);return;}
+      if(st.eveV!==st.eveA){st.mistakes++;SFX.play('bad');toast(`The dial shows ${st.eveV}, not ${st.eveA}. Keep turning.`);return;}
       st.eveTime=(performance.now()-st.eveStart)/1000; stopTick(); render();
       const stars=st.mistakes===0?3:st.mistakes<=2?2:1;
       endMission('m5',stars,'Cracked, on a tiny dial',[
@@ -835,14 +1121,15 @@ function breachDay(){
       <div class="sessions">${DAYS.map((_,i)=>sessCard(i)).join('')}</div><div class="choices" style="margin-top:14px">${controls}</div>`;
     wireHome();
     const rs=$('#runS'); rs&&(rs.onclick=runSession);
-    const br=$('#breach'); br&&(br.onclick=()=>{st.breached=true;render();
+    const br=$('#breach'); br&&(br.onclick=()=>{st.breached=true;SFX.play('alarm');render();
       const lost=st.phase==='rsa'?4:st.shred.filter(s=>!s).length;
       toast(st.phase==='rsa'?'<b>All four recorded sessions just opened.</b> One stolen key unlocked every session key it ever protected.':lost?`${lost} session${lost>1?'s':''} exposed because the ephemeral key was never destroyed.`:'<b>Nothing exposed.</b> The stolen key was never used to protect any session key.',6000);});
     const td=$('#toDhe'); td&&(td.onclick=()=>{st.phase='dhe';st.run=0;st.breached=false;st.shred=[false,false,false,false];render();});
     const tq=$('#toQuiz'); tq&&(tq.onclick=()=>{st.phase='quiz';render();});
-    const sh=$('#shred'); sh&&(sh.onclick=()=>{const i=st.pending.i;st.shred[i]=true;clearT();st.pending=null;st.run=i+1;render();});
+    const sh=$('#shred'); sh&&(sh.onclick=()=>{SFX.play('good');const i=st.pending.i;st.shred[i]=true;clearT();st.pending=null;st.run=i+1;render();});
   }
   function runSession(){
+    SFX.play('send');
     if(st.phase==='rsa'){st.run++;render();return;}
     const i=st.run,dur=rnd(2600,3600),t0=performance.now();
     st.pending={i}; st.run=i+1; render();
@@ -850,7 +1137,7 @@ function breachDay(){
     tick=setInterval(()=>{
       const left=1-(performance.now()-t0)/dur, bar=$('#shredBar');
       if(bar) bar.style.width=Math.max(0,left*100)+'%';
-      if(left<=0){clearT();st.pending=null;render();toast('Too slow. That key is still sitting in memory.');}
+      if(left<=0){clearT();st.pending=null;SFX.play('bad');render();toast('Too slow. That key is still sitting in memory.');}
     },50);
   }
   function clearT(){if(tick){clearInterval(tick);tick=null;}}
@@ -886,11 +1173,52 @@ function renderQuiz(head,Q,done){
     let answered=false;
     $$('.opt',screen).forEach(b=>b.onclick=()=>{
       if(answered)return; answered=true;
-      const j=+b.dataset.j, right=j===q.a; if(right)score++;
+      const j=+b.dataset.j, right=j===q.a; if(right)score++; SFX.play(right?'good':'bad');
       b.classList.add(right?'right':'wrong'); $$('.opt',screen)[q.a].classList.add('right');
       $('#qex').innerHTML=`<div class="explain"><b>${right?'Correct.':'Not quite.'}</b> ${q.e}</div><div class="choices"><button type="button" class="btn primary" id="qnext">${i+1<Q.length?'Next question':'Finish'}</button></div>`;
       $('#qnext').onclick=()=>{i++; if(i<Q.length)draw(); else done(score);};
       $('#qnext').focus();
+    });
+  }
+  draw();
+}
+
+
+/* ---------- shared: tap-in-order ---------- */
+function renderOrder(head,R,done,nextLabel){
+  const order=shuffle(R.steps.map((x,i)=>i)); let placed=0,mistakes=0;
+  function draw(){
+    screen.innerHTML=head+`<div class="card qwrap"><h3>${R.title}</h3><p>${R.sub}</p><div class="steps">${order.map(i=>`<button type="button" class="step ${i<placed?'placed':''}" data-i="${i}"><span class="n">${i<placed?i+1:'?'}</span><span>${R.steps[i]}</span></button>`).join('')}</div>
+      ${placed===R.steps.length?`<div class="explain">${R.why}</div><div class="choices"><button type="button" class="btn primary" id="nextR">${nextLabel||'Continue'}</button></div>`:''}</div>`;
+    wireHome();
+    $$('.step',screen).forEach(b=>b.onclick=()=>{
+      const i=+b.dataset.i; if(i<placed)return;
+      if(i===placed){placed++;SFX.play('good');draw();const nx=$('#nextR');nx&&nx.focus();}
+      else{mistakes++;SFX.play('bad');b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');}
+    });
+    const n=$('#nextR'); n&&(n.onclick=()=>done(mistakes));
+  }
+  draw();
+}
+
+/* ---------- shared: one-card-at-a-time sorter ---------- */
+function renderSorter(head,R,done){
+  const items=shuffle(R.items); let i=0,score=0;
+  function draw(){
+    const it=items[i];
+    screen.innerHTML=head+`<div class="card qwrap"><p class="lbl">${esc(R.title)} · ${i+1} of ${items.length}</p><h3 class="sort-q">${it.q}</h3>
+      <div class="bins">${R.bins.map(b=>`<button type="button" class="bin" data-b="${esc(b)}">${esc(b)}</button>`).join('')}</div><div id="sx"></div></div>`;
+    wireHome();
+    let answered=false;
+    $$('.bin',screen).forEach(btn=>btn.onclick=()=>{
+      if(answered)return; answered=true;
+      const right=btn.dataset.b===it.a; if(right)score++;
+      SFX.play(right?'good':'bad');
+      btn.classList.add(right?'right':'wrong');
+      $$('.bin',screen).find(x=>x.dataset.b===it.a).classList.add('right');
+      $('#sx').innerHTML=`<div class="explain"><b>${right?'Correct.':`It’s ${esc(it.a)}.`}</b> ${it.e}</div><div class="choices"><button type="button" class="btn primary" id="snext">${i+1<items.length?'Next':'Continue'}</button></div>`;
+      $('#snext').onclick=()=>{i++;if(i<items.length)draw();else done(score,items.length);};
+      $('#snext').focus();
     });
   }
   draw();
@@ -915,20 +1243,9 @@ function getCertified(){
       'Trust store: the root certificate is already installed on the client'],
      why:'A two-tier hierarchy keeps the root CA offline and protected. Intermediates do the day-to-day signing. If the root is compromised, the whole PKI is untrusted.'},
   ];
-  const st={r:0,placed:0,mistakes:0,order:null};
-  function draw(){
-    const R=ROUNDS[st.r]; if(!st.order) st.order=shuffle(R.steps.map((s,i)=>i));
-    screen.innerHTML=shell('m7')+`<p class="story">Mission 9 will ask you to trust a public key because of a certificate. First, see where certificates come from.</p>
-      <div class="card qwrap"><h3>${R.title}</h3><p>${R.sub}</p><div class="steps">${st.order.map(i=>`<button type="button" class="step ${i<st.placed?'placed':''}" data-i="${i}"><span class="n">${i<st.placed?i+1:'?'}</span><span>${R.steps[i]}</span></button>`).join('')}</div>
-      ${st.placed===R.steps.length?`<div class="explain">${R.why}</div><div class="choices"><button type="button" class="btn primary" id="nextR">${st.r+1<ROUNDS.length?'Next round':'Final round: quick check'}</button></div>`:''}</div>`;
-    wireHome();
-    $$('.step',screen).forEach(b=>b.onclick=()=>{
-      const i=+b.dataset.i; if(i<st.placed)return;
-      if(i===st.placed){st.placed++;draw();}
-      else{st.mistakes++;b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');}
-    });
-    const n=$('#nextR'); n&&(n.onclick=()=>{st.r++;st.placed=0;st.order=null;if(st.r<ROUNDS.length)draw();else finalQuiz();});
-  }
+  let mistakes=0;
+  const head=shell('m7')+`<p class="story">Mission 9 will ask you to trust a public key because of a certificate. First, see where certificates come from.</p>`;
+  const runRound=r=>renderOrder(head,ROUNDS[r],m=>{mistakes+=m;if(r+1<ROUNDS.length)runRound(r+1);else finalQuiz();},r+1<ROUNDS.length?'Next round':'Final round: quick check');
   function finalQuiz(){
     const Q=[
       {q:'Which key does the CA use to sign your certificate?',o:['Your private key','The CA’s private key','The CA’s public key','Your public key'],a:1,e:'The CA signs with its private key. Anyone can verify that signature with the CA’s public key, which sits in the root certificate.'},
@@ -937,16 +1254,16 @@ function getCertified(){
       {q:'A single-CA hierarchy is simple, but it has one big weakness. What is it?',o:['It can’t issue wildcards.','It’s a single point of failure with higher risk of compromise.','It needs OCSP.'],a:1,e:'One CA doing everything is a SPoF. Two-tier hierarchies protect the root and delegate to intermediates.'},
     ];
     renderQuiz(shell('m7'),Q,score=>{
-      const stars=st.mistakes<=1&&score>=3?3:st.mistakes<=4&&score>=2?2:1;
+      const stars=mistakes<=1&&score>=3?3:mistakes<=4&&score>=2?2:1;
       endMission('m7',stars,'Certified',[
         '<b>CSR flow:</b> generate the key pair and keep the private key, send the public key in a CSR, the CA or RA authenticates you, the CA signs with its private key, and the certificate is issued.',
         '<b>Certificates</b> bind an identity (subject, SAN) to a public key. They include a validity period and the issuer, and are signed by the CA.',
         '<b>Root of trust:</b> the root CA certificate is self-signed and installed on clients. Root → intermediate → leaf is a two-tier hierarchy.',
         'The <b>RA</b> is subordinate to the root CA and verifies identities. <b>Self-signed</b> certificates are untrusted without PKI.'],
-        `<p>Ordering mistakes: ${st.mistakes} · Quiz: ${score}/4</p>`);
+        `<p>Ordering mistakes: ${mistakes} · Quiz: ${score}/4</p>`);
     });
   }
-  draw();
+  runRound(0);
 }
 
 /* =====================================================================
@@ -1013,7 +1330,7 @@ function checkpoint(){
       <h4>Checklist</h4><ul style="font-family:var(--f-body);font-size:14px"><li>Dates include today?</li><li>Host matches a SAN entry? (* = one label)</li><li>Chain ends at a trusted root?</li><li>Not on CRL, and OCSP says good?</li><li>Signature verifies?</li></ul></aside></div>`;
     wireHome();
     $$('[data-v]',screen).forEach(b=>b.onclick=()=>decide(b.dataset.v));
-    $('#ocspBtn').onclick=()=>{st.ocspShown=true;render();};
+    $('#ocspBtn').onclick=()=>{SFX.play('click');st.ocspShown=true;render();};
   }
   function decide(v){
     if(st.paused)return; st.paused=true;
@@ -1023,6 +1340,7 @@ function checkpoint(){
     else if(v==='ok'){st.strikes++;title='You trusted a bad certificate';tone='fail';msg='Strike. An attacker could now read or change this traffic.';}
     else if(c.answer==='ok'){title='False alarm';tone='fail';msg='That certificate was fine. No points, but no strike.';}
     else{st.score+=40;title='Blocked, wrong reason';tone='info';msg=`+40 points. Blocking was right, but the reason was “${REASONS[c.answer]}”.`;}
+    SFX.play(tone==='win'?'coin':title.startsWith('You trusted')||v===null?'alarm':'bad');
     const endNow=st.strikes>=3, last=st.i+1>=queue.length;
     modal({title,tone,html:`<p>${msg}</p><p class="explain">${c.why}</p>`,actions:[{label:endNow?'Shift over':last?'See results':'Next certificate',primary:true,fn:()=>{
       if(endNow||last) return finish(endNow);
@@ -1044,8 +1362,189 @@ function checkpoint(){
   render(); start();
 }
 
+/* =====================================================================
+   MISSION 11 — CHAIN BREAKER (blockchain tamper-evidence, slide 27)
+   Eve edits a ledger entry; the hash links expose her instantly.
+   The lesson is that the chain makes tampering visible, not that it succeeds.
+   ===================================================================== */
+function chainBreaker(){
+  const H=x=>sha256(x).slice(0,12);
+  const TX=[['Genesis block','—'],['Alice pays Bob','5 coins'],['Bob pays Carol','2 coins'],['Dave pays Alice','9 coins'],['Carol pays Erin','1 coin']];
+  function build(){
+    const blocks=[]; let prev='000000000000';
+    TX.forEach(([what,amt],i)=>{const b={i,what,amt,prev,nonce:0};b.hash=H(i+what+amt+prev+b.nonce);blocks.push(b);prev=b.hash;});
+    return blocks;
+  }
+  const st={blocks:build(),phase:'intro',edited:null,recomputed:new Set(),done:false};
+  function valid(b,idx){const good=H(b.i+b.what+b.amt+b.prev+b.nonce)===b.hash;const linked=idx===0||b.prev===st.blocks[idx-1].hash;return good&&linked;}
+  function render(){
+    const firstBad=st.blocks.findIndex((b,i)=>!valid(b,i));
+    screen.innerHTML=shell('m11')+`<p class="story">The Wire Room keeps a public ledger. Each block stores the <b>hash of the block before it</b>, so the blocks form a chain. Play as Eve: change a payment in your favor, then try to make the chain look untouched.</p>
+    <div class="ledger">${st.blocks.map((b,i)=>{const ok=valid(b,i);return `<div class="block ${ok?'':'bad'} ${st.edited===i?'edited':''}">
+      <div class="blk-h"><span class="lbl">Block ${b.i}</span>${ok?'<span class="ok-tag">valid</span>':'<span class="bad-tag">broken</span>'}</div>
+      <div class="blk-body"><label>Data</label>${i>0&&st.phase!=='intro'?`<input class="inp mono blk-what" data-i="${i}" value="${esc(b.what)}"> <input class="inp mono blk-amt" data-i="${i}" value="${esc(b.amt)}" style="flex:0 1 110px">`:`<div class="mono">${esc(b.what)}${b.amt!=='—'?' · '+esc(b.amt):''}</div>`}
+        <label>Prev hash</label><div class="mono small ${i>0&&b.prev!==st.blocks[i-1].hash?'mism':''}">${b.prev}</div>
+        <label>Nonce</label><div class="row"><span class="mono">${b.nonce}</span>${st.phase==='fix'&&!valid(b,i)?`<button type="button" class="btn sm" data-mine="${i}">Recompute this block</button>`:''}</div>
+        <label>This hash</label><div class="mono small">${b.hash}</div></div>
+      ${i<st.blocks.length-1?`<div class="chain-link ${b.hash===st.blocks[i+1].prev?'':'cut'}"></div>`:''}</div>`;}).join('')}</div>
+    <div class="card" id="cbPanel"></div>`;
+    wireHome();
+    const P=$('#cbPanel');
+    if(st.phase==='intro'){
+      P.innerHTML=`<h3>The ledger checks out</h3><p>Every block’s stored hash matches its contents, and every block’s “prev hash” matches the real hash of the block before it. Now go change block 1 so Alice pays <b>you</b> 500 instead of paying Bob 5.</p><div class="choices"><button type="button" class="btn primary" id="cbEdit">Start editing</button></div>`;
+      $('#cbEdit').onclick=()=>{SFX.play('click');st.phase='edit';render();};
+    }else if(firstBad>=0){
+      P.innerHTML=`<h3 class="warn-h">Chain broken at block ${firstBad}</h3><p>You changed the data, so block ${firstBad}’s contents no longer match its stored hash — and every block after it points back to a hash that no longer exists. On a real network, hundreds of peers see the mismatch at once and reject your copy.</p>
+      <p>Think you can patch it? ${st.phase==='fix'?'Recompute the broken blocks one by one and watch what happens.':''}</p>
+      <div class="choices">${st.phase!=='fix'?'<button type="button" class="btn primary" id="cbTryFix">Try to cover it up</button>':'<button type="button" class="btn" id="cbReset">Reset the ledger</button>'}</div>`;
+      const tf=$('#cbTryFix'); tf&&(tf.onclick=()=>{SFX.play('click');st.phase='fix';render();});
+      const rs=$('#cbReset'); rs&&(rs.onclick=()=>{st.blocks=build();st.phase='edit';render();});
+    }else if(st.edited!=null){
+      P.innerHTML=`<h3 class="warn-h">You patched every block… and it still doesn’t help</h3><p>You recomputed each block so the chain is internally consistent again. But this is <b>your</b> copy. The honest network still holds the original chain, and its blocks have different hashes from yours. To overwrite theirs you’d have to out-compute the entire network — and keep out-computing it forever.</p>
+      <div class="choices"><button type="button" class="btn primary" id="cbFinish">That’s the point</button><button type="button" class="btn" id="cbReset2">Reset</button></div>`;
+      $('#cbFinish').onclick=finish;
+      $('#cbReset2').onclick=()=>{st.blocks=build();st.edited=null;st.phase='edit';render();};
+    }else{
+      P.innerHTML=`<h3>Chain intact</h3><p>Edit block 1’s data to break it, or press below if you’re convinced.</p><div class="choices"><button type="button" class="btn primary" id="cbFinish2">Wrap up</button></div>`;
+      $('#cbFinish2').onclick=finish;
+    }
+    $$('.blk-what,.blk-amt',screen).forEach(inp=>inp.oninput=()=>{
+      const i=+inp.dataset.i;
+      st.blocks[i].what=$(`.blk-what[data-i="${i}"]`).value;
+      st.blocks[i].amt=$(`.blk-amt[data-i="${i}"]`).value;
+      if(st.edited===null)st.edited=i;
+      SFX.play('tick');
+      const fb=st.blocks.findIndex((b,j)=>!valid(b,j));
+      if(fb>=0)SFX.play('bad');
+      render();
+    });
+    $$('[data-mine]',screen).forEach(b=>b.onclick=()=>{
+      const i=+b.dataset.mine;
+      if(i>0)st.blocks[i].prev=st.blocks[i-1].hash;
+      st.blocks[i].hash=H(st.blocks[i].i+st.blocks[i].what+st.blocks[i].amt+st.blocks[i].prev+st.blocks[i].nonce);
+      st.recomputed.add(i);SFX.play('mine');
+      st.edited=st.blocks.findIndex((b,j)=>!valid(b,j))<0?st.edited:st.edited;
+      if(st.blocks.every((b,j)=>valid(b,j)))st.edited=st.edited??1;
+      render();
+    });
+  }
+  function finish(){
+    const stars=st.phase==='fix'||st.edited!=null?3:st.phase==='edit'?2:1;
+    endMission('m11',stars,'Tamper-evident',[
+      'A <b>blockchain</b> is an expanding list of records where each block is hashed together with the <b>hash of the previous block</b>.',
+      'That linking makes the chain <b>tamper-evident</b>: change any past record and its hash changes, breaking every block after it.',
+      'The ledger is an <b>open, public, decentralized</b> record distributed across a peer-to-peer network. To rewrite history you’d have to out-compute the whole network, which is why old blocks are effectively permanent.',
+      'Uses include cryptocurrency, data registries, digital identity, and supply-chain tracking.']);
+  }
+  render();
+}
+
+/* =====================================================================
+   MISSION 12 — HIDE IN PLAIN SIGHT (obfuscation, slides 24–25)
+   ===================================================================== */
+function hideInPlainSight(){
+  const st={phase:'steg',found:false,scan:0};
+  const MSG='MEET AT PIER 7';
+  function render(){
+    if(st.phase==='sort') return sortPart();
+    const revealed=st.scan>=100;
+    screen.innerHTML=shell('m12')+`<p class="story">Sometimes the goal isn’t to scramble a message — it’s to hide that there’s a message at all. That’s <b>obfuscation</b>. First up: <b>steganography</b>, hiding data inside an ordinary-looking file.</p>
+    <div class="two"><div class="card"><h3>Harbor photo <span class="muted" style="font-weight:400">harbor.png</span></h3>
+      <div class="stego" aria-label="A photo of a harbor">
+        <svg viewBox="0 0 320 180" width="100%" role="img" aria-label="Stylized harbor at dusk">
+          <rect width="320" height="180" fill="#2b4a63"/><rect y="120" width="320" height="60" fill="#16303f"/>
+          <circle cx="255" cy="45" r="22" fill="#e8b06a"/>
+          <rect x="30" y="70" width="16" height="50" fill="#0e2331"/><rect x="52" y="55" width="14" height="65" fill="#0e2331"/><rect x="72" y="80" width="18" height="40" fill="#0e2331"/>
+          <path d="M120 120 L140 95 L160 120Z" fill="#0e2331"/><rect x="137" y="95" width="6" height="25" fill="#0e2331"/>
+          <path d="M200 120 L215 100 L230 120Z" fill="#0b1b26"/>
+          <rect class="scanline" x="0" y="0" width="320" height="2" fill="#6ff0c0" style="transform:translateY(${st.scan*1.78}px);opacity:${revealed?0:.85}"/>
+          ${revealed?`<g font-family="JetBrains Mono, monospace" font-size="9" fill="#6ff0c0">${[...MSG].map((ch,i)=>`<text x="${14+i*20}" y="150">${ch===' '?'·':ch}</text>`).join('')}</g>`:''}
+        </svg></div>
+      <p class="muted" style="font-size:14px">The picture looks completely normal. The hidden data lives in the <b>least significant bit</b> of each pixel’s color — a change too small for the eye to see.</p>
+      <div class="choices">${revealed?`<div class="explain" style="flex:1 1 100%"><b>Found it:</b> “${MSG}”. It was there the whole time, riding in bits that don’t change how the image looks.</div>`:`<button type="button" class="btn primary" id="scanBtn">Extract the low bits</button>`}</div>
+    </div>
+    <div class="card"><h3>Why hide, not encrypt?</h3><ul style="margin:0;padding-left:18px">
+      <li>Encryption hides <em>what</em> a message says. It still shouts <em>that</em> a secret exists.</li>
+      <li>Steganography hides <em>that there is a message</em> inside an innocent cover: an image, audio, video, a document, even a network protocol.</li>
+      <li>It’s also used to prove <b>integrity</b> and <b>non-repudiation</b> (digital watermarks) and to run <b>covert channels</b>.</li>
+      <li>Weakness: no confidentiality on its own. Once someone knows where to look, the data is right there. Serious use combines it with encryption.</li></ul>
+      ${revealed?'<div class="choices"><button type="button" class="btn primary" id="toSort">Next: obfuscation methods</button></div>':''}</div></div>`;
+    wireHome();
+    const sc=$('#scanBtn'); sc&&(sc.onclick=()=>{
+      SFX.play('hash');let n=0;const iv=setInterval(()=>{st.scan=Math.min(100,st.scan+8);render();if(st.scan>=100){clearInterval(iv);SFX.play('coin');st.found=true;}},60);
+    });
+    const ts=$('#toSort'); ts&&(ts.onclick=()=>{SFX.play('click');st.phase='sort';render();});
+  }
+  function sortPart(){
+    const head=shell('m12')+`<p class="story">Obfuscation has more than one tool. Sort each example into the right method.</p>`;
+    renderSorter(head,{title:'Which method?',bins:['Steganography','Tokenization','Data masking'],
+      items:[
+        {q:'A credit-card number is swapped for a random value; the real number sits in a separate secure vault and can be retrieved with the token.',a:'Tokenization',e:'Tokenization replaces sensitive data with a random, non-sensitive substitute. It’s reversible through the vault by an authorized request.'},
+        {q:'On the support screen a Social Security number shows as xxx-xx-6789.',a:'Data masking',e:'Data masking hides all or part of a dataset, showing substitute characters in place of the original. Often it’s one-way for display.'},
+        {q:'A shipping manifest is embedded invisibly inside a product photo posted publicly.',a:'Steganography',e:'Steganography conceals data inside a non-secret cover medium so no one suspects a message is present.'},
+        {q:'A payment app stores a random stand-in for your card so a breach of the app leaks no real card numbers, but checkout still works.',a:'Tokenization',e:'The token maps back to the real value only inside the vault, so the app never holds the sensitive data itself.'},
+        {q:'A test database shows realistic-looking but scrambled names and account numbers so developers never see real customer data.',a:'Data masking',e:'Masking substitutes hidden or altered values so the shape of the data is usable while the real values stay hidden.'},
+        {q:'A message is tucked into the unused fields of a network protocol to slip past a monitor.',a:'Steganography',e:'A covert channel hides data inside an ordinary carrier — here, a protocol’s own structure.'},
+      ]},(score,total)=>{
+        const stars=score>=total-1?3:score>=total-2?2:1;
+        endMission('m12',stars,'Hidden and sorted',[
+          '<b>Obfuscation</b> makes data unclear or hard to understand — sometimes hiding that a secret exists at all.',
+          '<b>Steganography</b> conceals a message inside a non-secret cover (image, audio, video, document, network protocol). It can also carry watermarks for integrity and run covert channels. It gives no confidentiality by itself.',
+          '<b>Tokenization</b> replaces sensitive data with a random token; the original is retrievable from a secure vault, so it’s reversible for authorized requests.',
+          '<b>Data masking</b> substitutes hidden characters for all or part of a value (123-45-6789 → xxx-xx-6789), showing usable but non-sensitive data.'],
+          `<p>Sorted ${score} of ${total} correctly.</p>`);
+      });
+  }
+  render();
+}
+
+/* =====================================================================
+   MISSION 13 — VAULT KEEPER (key escrow, KMS lifecycle, TPM/HSM; slides 23, 29-30)
+   ===================================================================== */
+function vaultKeeper(){
+  const head=shell('m13')+`<p class="story">Every key needs a safe home and a life plan. Part one: put each key in the right kind of storage. Part two: order a key’s lifecycle. Part three: a quick check.</p>`;
+  function part1(){
+    renderSorter(head,{title:'Where does this key live?',bins:['TPM','HSM','Key escrow','Secure enclave'],
+      items:[
+        {q:'A laptop needs a chip soldered to its motherboard to store the disk-encryption key and verify secure boot.',a:'TPM',e:'A Trusted Platform Module is hardware embedded in the chipset or CPU. It creates and stores keys and supports secure boot.'},
+        {q:'A bank needs a tamper-resistant PCIe card that generates and guards thousands of certificate keys for its data center.',a:'HSM',e:'A Hardware Security Module is a plug-in card, network appliance, or USB device dedicated to key generation and storage at scale.'},
+        {q:'A company must keep a backup copy of its keys with a trusted third party in case an employee leaves and the original is lost.',a:'Key escrow',e:'Key escrow is secure third-party storage of key copies and backups. It carries the same powers and risks as the original key.'},
+        {q:'Keys loaded into system RAM must be walled off so other processes on the machine can’t read them.',a:'Secure enclave',e:'A secure enclave protects keys loaded into RAM from unauthorized access by the rest of the system.'},
+        {q:'A phone generates a per-device key that never leaves a protected region of the processor.',a:'Secure enclave',e:'The enclave isolates keys in memory from the rest of the system, even the OS.'},
+        {q:'A court order requires that a copy of an encryption key be recoverable later from a trusted custodian.',a:'Key escrow',e:'Escrow keeps recoverable copies with a trusted third party — useful for recovery, but the copy is as sensitive as the original.'},
+      ]},()=>part2());
+  }
+  function part2(){
+    renderOrder(head,{title:'The key lifecycle',sub:'A centralized Key Management System handles a key from cradle to grave. Tap the stages in order.',
+      steps:['Generation','Distribution','Storage','Renewal','Expiration','Revocation','Destruction'],
+      why:'A <b>Key Management System (KMS)</b> is centralized and performs the whole lifecycle. Decentralized key management leaves each stage to individual owners. Hardware cryptoprocessors (TPM, HSM) carry out the storage and generation stages securely.'},
+    ()=>part3());
+  }
+  function part3(){
+    const Q=[
+      {q:'Your app must store user passwords. Which is the right practice?',o:['Store the plaintext password','Store hash(salt + password) and run it through many rounds (key stretching, e.g. PBKDF2)','Encrypt each password with one shared key','Store the password reversed'],a:1,e:'Salting adds entropy so identical passwords hash differently and rainbow tables don’t work; key stretching (PBKDF2) adds rounds so each guess is slow. That’s the slide-26 defense.'},
+      {q:'What is the main risk of key escrow?',o:['It’s slower than normal storage','The escrowed copy has the same power and vulnerabilities as the original key','It only works for symmetric keys','It expires automatically'],a:1,e:'A stored copy can do everything the original can, so escrow storage must be protected as strongly as the key itself.'},
+      {q:'TPM vs HSM — which statement is right?',o:['TPM is embedded in a device’s chipset/CPU; HSM is a separate card, appliance, or USB module','They’re the same thing','HSM is built into the CPU; TPM is a network appliance','Neither can generate keys'],a:0,e:'A TPM is embedded hardware for one machine; an HSM is dedicated, often external hardware built to manage many keys.'},
+      {q:'A key has reached its expiration date. What should a KMS do next?',o:['Keep using it','Move it through revocation and destruction','Email it to the owner','Publish it'],a:1,e:'Expiration leads to revocation and secure destruction — the end of the managed lifecycle.'},
+    ];
+    renderQuiz(head,Q,score=>{
+      const stars=score>=4?3:score>=3?2:1;
+      endMission('m13',stars,'Vault keeper',[
+        '<b>Key escrow</b> is secure storage of key copies with a trusted third party; the copy carries the same powers and risks as the original.',
+        'A <b>Key Management System</b> is centralized and runs the full <b>lifecycle</b>: generation, distribution, storage, renewal, expiration, revocation, destruction.',
+        '<b>Hardware cryptoprocessors:</b> a <b>TPM</b> is embedded in the chipset/CPU (key storage, secure boot); an <b>HSM</b> is a plug-in card, appliance, or USB module; a <b>secure enclave</b> protects keys loaded into RAM.',
+        '<b>Salting</b> and <b>key stretching</b> (PBKDF2) protect stored password hashes: salt defeats rainbow tables, stretching slows every guess.'],
+        `<p>Quiz: ${score}/4</p>`);
+    });
+  }
+  part1();
+}
+
 /* ---------- boot ---------- */
 $('#homeBtn').onclick=home;
+function drawSound(){const b=$('#soundBtn');b.innerHTML=ICON.sound(SFX.on);b.setAttribute('aria-pressed',String(SFX.on));b.setAttribute('aria-label',SFX.on?'Sound on':'Sound off');b.title=SFX.on?'Sound on':'Sound off';}
+$('#soundBtn').onclick=()=>{SFX.toggle();drawSound();};
+drawSound();
 function start(data){drawStarCount(); if(data&&data.screen&&MISSIONS[data.screen]) open(data.screen); else home();}
 if(window.claude&&window.claude.hot&&window.claude.hot.snapshot) window.claude.hot.snapshot(()=>({screen:current}));
 window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});

@@ -35,8 +35,13 @@ Students don't memorize the hybrid key exchange diagram. They rebuild it by lock
 | III. Who's Really Bob? | 7 | Get Certified | CSR, CA, RA, root/intermediate/leaf | 33–38 |
 | | 8 | Checkpoint | Certificate validation: dates, SAN, wildcards, trust store, CRL vs. OCSP | 33–40 |
 | | 9 | Mallory in the Middle | Boss: spot the fake certificate, then send secret and signed | 19–40 |
+| IV. Eve's Toolkit | 10 | Chain Breaker | Blockchain tamper-evidence (real SHA-256 hash chain) | 27 |
+| | 11 | Hide in Plain Sight | Obfuscation: steganography, tokenization, data masking | 24–25 |
+| | 12 | Vault Keeper | TPM / HSM / enclave / escrow, KMS lifecycle, salting & key stretching | 23, 26, 29–30 |
 
-Each mission ends with exam-ready takeaways worded to match the slides. Stars (27 total) are saved in each student's own browser. No accounts, no tracking, and nothing leaves the page.
+Each mission opens with an illustrated story briefing from the cast and ends with exam-ready takeaways worded to match the slides. Stars (36 total) are saved in each student's own browser. No accounts, no tracking, and nothing leaves the page.
+
+**Completion codes:** because progress is local, every mission win and the mission board issue codes (e.g. `M03-2-ABC123`, `R-…`) tied to the student's name. Teachers verify them on the board under "Check a student's code." **Sound:** action feedback is synthesized in-browser and can be muted with the header button.
 
 ### Suggested use
 

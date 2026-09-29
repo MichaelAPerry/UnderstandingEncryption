@@ -1,10 +1,12 @@
 # Beat Eve: a key exchange game
 
-A browser game for the key exchange and PKI material in `Chapter02(1).pptx` (CompTIA Security+ SY0-701, slides 1–40).
+A browser game for the cryptography material in `Chapter02(1).pptx` (CompTIA Security+ SY0-701, Chapter 2).
 Open `index.html` in any modern browser. There's nothing to install and it works offline, though fonts fall back to system fonts without a connection.
 
 Eve copies everything the player sends. The player has to get secrets to Bob anyway, using the same moves real protocols use.
 Students don't memorize the hybrid key exchange diagram. They rebuild it, because every shortcut fails in front of them.
+
+Every mission opens with a short illustrated **story briefing** from the cast (Alice, Bob, Trent the CA, Eve the eavesdropper, Mallory the active attacker), and ends with exam-ready takeaways.
 
 ## Missions
 
@@ -19,6 +21,23 @@ Students don't memorize the hybrid key exchange diagram. They rebuild it, becaus
 | 7 | Get Certified | CSR flow, CA vs. RA, root/intermediate/leaf chain | 33–38 |
 | 8 | Checkpoint | Timed certificate validation: dates, SAN, wildcards, trust store, CRL vs. OCSP, suspension vs. revocation | 33–40 |
 | 9 | Mallory in the Middle | Boss: choose the genuine certificate, then send a file that's both confidential and signed | 19–40 |
+| 10 | Chain Breaker | Blockchain tamper-evidence: edit a ledger entry and watch the hash chain break (uses real SHA-256) | 27 |
+| 11 | Hide in Plain Sight | Obfuscation: extract a message hidden in an image (steganography), then sort steganography vs. tokenization vs. data masking | 24–25 |
+| 12 | Vault Keeper | Key storage (TPM, HSM, secure enclave, key escrow), the KMS key lifecycle, and salting/key stretching | 23, 26, 29–30 |
+
+## Completion codes (for grading)
+
+Progress is saved only in the student's browser, so the game issues **completion codes** you can collect and check:
+
+- Each mission's win screen shows a code like `M03-2-ABC123` (mission 3, 2 stars), tied to the name the student enters.
+- The mission board shows one **report-card code** (`R-…`) covering all twelve missions and the student's best stars.
+- **Check a student's code** on the mission board (under "For teachers") verifies a code against a name and reports the stars. A student can't fake a higher score, because the code is a keyed checksum of their name and result.
+
+The verification key lives in the page, so codes stop casual copying between students, not a determined forger who reads the source. For stakes higher than a warm-up grade, watch them play.
+
+## Sound
+
+Every action has feedback (locking, sending, a match, an alarm when Eve reads something). Sound is synthesized in the browser (no files) and can be muted with the speaker button in the header; the choice is remembered per browser.
 
 ## How the courier puzzles work (missions 1–3 and 9)
 
@@ -33,9 +52,9 @@ Players tap items on Alice's desk to **lock** them with a key, **hash** them, or
 ## Classroom notes
 
 - Each mission ends with exam-ready takeaways worded to match the slides.
-- Stars (27 total) are saved in each student's browser. Nothing is sent anywhere.
+- Stars (36 total) are saved in each student's browser. Nothing is sent anywhere.
 - Checkpoint generates a new random set of ten certificates on every play. It works well as a warm-up, or as a competition on class score.
-- Suggested order: missions 1–3 after slide 21, missions 4–6 after slide 22, missions 7–9 after slide 40.
+- Suggested order: missions 1–3 after slide 21, missions 4–6 after slide 22, missions 7–9 after slide 40, missions 10–12 after slide 30.
 
 ## Why a new game
 
