@@ -1,0 +1,1055 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Beat Eve</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a signals desk. Alice on the left, the tapped wire (Eve) in the middle, Bob on the right.
+   Missions sit on a dispatch board grouped by chapter. Key colors are semantic and never decorative. */
+:root{
+  --bg:#E6EBF1; --panel:#F8FAFC; --panel2:#EDF1F6; --ink:#121B2A; --muted:#566377; --line:#C5CFDB;
+  --accent:#2944D6; --accent-ink:#FFFFFF; --accent-soft:#DCE3FB;
+  --eve:#8A3BC2; --eve-soft:#F0E4F8; --good:#157F55; --good-soft:#DDF2E8; --bad:#C22E3A; --bad-soft:#F9E0E2; --warn:#A86B12;
+  --k-shared:#B57C00; --k-bob:#0A8784; --k-alice:#CF4E2C; --k-mal:#6B5C9C; --k-ca:#3B5B8C;
+  --f-display:'Chakra Petch','Segoe UI',system-ui,sans-serif;
+  --f-body:'Atkinson Hyperlegible',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  --r:10px;
+  --shadow:0 1px 0 rgba(18,27,42,.05),0 8px 22px -14px rgba(18,27,42,.35);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D131E; --panel:#151D2B; --panel2:#1B2536; --ink:#E5EBF4; --muted:#96A2B5; --line:#2B374B;
+    --accent:#8198FF; --accent-ink:#0D131E; --accent-soft:#1E2A52;
+    --eve:#C58CF2; --eve-soft:#2C1D3B; --good:#4CC48C; --good-soft:#15342A; --bad:#FF6E73; --bad-soft:#3A1B20; --warn:#E3A64A;
+    --k-shared:#F0B535; --k-bob:#39C6BF; --k-alice:#FF8866; --k-mal:#AA9BE0; --k-ca:#8FB0E6;
+    --shadow:0 1px 0 rgba(0,0,0,.3),0 10px 24px -14px rgba(0,0,0,.8);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D131E; --panel:#151D2B; --panel2:#1B2536; --ink:#E5EBF4; --muted:#96A2B5; --line:#2B374B;
+  --accent:#8198FF; --accent-ink:#0D131E; --accent-soft:#1E2A52;
+  --eve:#C58CF2; --eve-soft:#2C1D3B; --good:#4CC48C; --good-soft:#15342A; --bad:#FF6E73; --bad-soft:#3A1B20; --warn:#E3A64A;
+  --k-shared:#F0B535; --k-bob:#39C6BF; --k-alice:#FF8866; --k-mal:#AA9BE0; --k-ca:#8FB0E6;
+  --shadow:0 1px 0 rgba(0,0,0,.3),0 10px 24px -14px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:0 48px}
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.lbl{font-family:var(--f-display);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-in{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:10px;display:flex;align-items:center;gap:12px}
+.brand{font-family:var(--f-display);font-weight:700;letter-spacing:.06em;font-size:18px;display:flex;align-items:center;gap:8px;background:none;border:0;cursor:pointer;padding:4px 0}
+.brand .eye{width:26px;height:26px}
+.top .spacer{flex:1}
+.starcount{display:flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:14px}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:700;transition:transform .08s,background .15s}
+.btn:hover{background:var(--panel2)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent}
+.btn.sm{padding:5px 10px;font-size:14px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* home */
+.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;align-items:center;padding-block:36px 20px}
+.hero h1{font-size:clamp(44px,8vw,92px);letter-spacing:.02em;line-height:.9;font-weight:700}
+.hero h1 span{color:var(--eve)}
+.hero p{font-size:19px;max-width:34ch;margin:16px 0 0}
+.hero .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+.stage svg{width:100%;height:auto;display:block}
+.cast{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-block:8px 28px}
+.cast div{border-top:3px solid var(--c);padding-top:8px}
+.cast b{font-family:var(--f-display);font-size:18px;display:block}
+.cast small{color:var(--muted);font-size:14px}
+.chapter{margin-block:26px}
+.chapter-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.chapter-head .num{font-family:var(--f-display);font-weight:700;font-size:15px;color:var(--accent);letter-spacing:.1em}
+.chapter-head h2{font-size:26px}
+.chapter-head .slides{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.tile{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;cursor:pointer;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow);transition:transform .12s,border-color .12s}
+.tile:hover{transform:translateY(-2px);border-color:var(--accent)}
+.tile .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tile h3{font-size:21px}
+.tile p{margin:0;color:var(--muted);font-size:15px}
+.tile .tag{font-family:var(--f-mono);font-size:12px;color:var(--accent)}
+.stars{display:inline-flex;gap:2px}
+.stars svg{width:18px;height:18px}
+.teacher{margin-top:36px;border-top:1px solid var(--line);padding-top:18px;color:var(--muted);font-size:15px;max-width:75ch}
+
+/* mission shell */
+.mhead{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between;padding-block:22px 12px}
+.mhead h2{font-size:clamp(28px,4.5vw,40px)}
+.mhead .kicker{font-family:var(--f-mono);font-size:13px;color:var(--accent);margin-bottom:6px}
+.story{max-width:72ch;font-size:17px;margin:0 0 12px}
+.goals{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.goal{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:4px 12px 4px 8px;font-size:14px}
+.goal i{width:10px;height:10px;border-radius:50%;background:var(--line);display:inline-block}
+.goal.done{border-color:var(--good);background:var(--good-soft)}
+.goal.done i{background:var(--good)}
+.hintbox{background:var(--accent-soft);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:15px}
+
+/* courier bench */
+.bench{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);min-width:0}
+.panel h3{font-size:18px;display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.panel h3 .dot{width:12px;height:12px;border-radius:50%;background:var(--c)}
+.items{display:flex;flex-direction:column;gap:8px}
+.deskitem{border-radius:9px;cursor:pointer;outline-offset:2px}
+.sentmark{display:block;margin:3px 0 0 8px;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;color:var(--good)}
+.deskitem.sel>.it{box-shadow:0 0 0 3px var(--accent)}
+.it{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);background:var(--panel2);border-radius:9px;padding:8px 10px;min-width:0}
+.it>div{min-width:0}
+.it b{display:block;font-size:15px;line-height:1.3;overflow-wrap:anywhere}
+.it small{display:block;font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.it .ic{width:26px;height:26px;flex:none;margin-top:1px}
+.it.key{border-left:4px solid var(--kc)}
+.badge{display:inline-block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;padding:1px 6px;border-radius:4px;border:1px solid currentColor;margin-left:4px;vertical-align:2px}
+.badge.priv{color:var(--bad)}
+.badge.pub{color:var(--good)}
+.badge.sec{color:var(--k-shared)}
+.it.box{flex-direction:column;gap:6px;border:2px solid var(--kc);background:transparent}
+.box-head{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700}
+.box-head .ic{width:20px;height:20px}
+.box-in{width:100%;padding-left:10px;border-left:2px dashed var(--kc)}
+.box-sealed{font-size:13px;color:var(--muted);font-style:italic}
+.it.leak{box-shadow:0 0 0 2px var(--bad);background:var(--bad-soft)}
+.it .leaktag{color:var(--bad);font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;font-weight:600}
+.actions{margin-top:12px;border-top:1px dashed var(--line);padding-top:12px;display:flex;flex-direction:column;gap:10px}
+.actions .row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.keybtn{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--kc);background:var(--panel);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:14px;font-weight:700}
+.keybtn .ic{width:18px;height:18px}
+.keybtn:hover{background:var(--panel2)}
+.empty{color:var(--muted);font-size:14px;font-style:italic}
+.pipe{position:relative;height:74px;margin-block:4px 10px}
+.pipe .line{position:absolute;left:4px;right:4px;top:22px;height:4px;border-radius:2px;background:repeating-linear-gradient(90deg,var(--line) 0 10px,transparent 10px 16px)}
+.pipe .endA,.pipe .endB{position:absolute;top:14px;width:20px;height:20px;border-radius:50%;border:3px solid var(--c);background:var(--panel)}
+.pipe .endA{left:0}.pipe .endB{right:0}
+.pipe .tap{position:absolute;left:50%;top:24px;width:2px;height:24px;background:var(--eve);transform:translateX(-50%)}
+.pipe .evebug{position:absolute;left:50%;top:44px;transform:translateX(-50%);width:34px;height:26px}
+.pipe .evebug.flash{animation:blink .5s}
+@keyframes blink{50%{transform:translateX(-50%) scale(1.35)}}
+.packet{position:absolute;top:12px;left:0;width:24px;height:24px;border-radius:6px;background:var(--accent);box-shadow:0 0 0 3px var(--panel);animation:travel .95s ease-in-out forwards}
+@keyframes travel{from{left:0}to{left:calc(100% - 24px)}}
+.evehead{color:var(--eve)}
+.log{margin-top:14px;font-family:var(--f-mono);font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:2px;max-height:150px;overflow:auto}
+.log div::before{content:"› ";color:var(--accent)}
+
+/* modal + toast */
+.modal{position:fixed;inset:0;z-index:50;background:rgba(8,12,20,.55);display:grid;place-items:center;padding:16px}
+.modal-card{background:var(--panel);color:var(--ink);border-radius:14px;max-width:620px;width:100%;max-height:calc(100% - 32px);overflow:auto;padding:22px;border-top:6px solid var(--tone,var(--accent));box-shadow:0 30px 60px -20px rgba(0,0,0,.5)}
+.modal-card h2{font-size:28px;margin-bottom:10px}
+.modal-card ul{padding-left:20px;margin:8px 0}
+.modal-card li{margin-bottom:6px}
+.modal-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:18px}
+.bigstars{display:flex;gap:6px;margin:4px 0 12px}
+.bigstars svg{width:40px;height:40px}
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;max-width:min(560px,calc(100% - 32px));background:var(--ink);color:var(--bg);border-radius:10px;padding:12px 16px;font-size:15px;box-shadow:var(--shadow);animation:pop .2s}
+@keyframes pop{from{opacity:0;transform:translate(-50%,8px)}}
+
+/* generic mission surfaces */
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow);min-width:0}
+.card h3{font-size:20px;margin-bottom:8px}
+.choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.swatch{width:62px;height:62px;border-radius:50%;border:3px solid var(--panel);box-shadow:0 0 0 1px var(--line);cursor:pointer;display:grid;place-items:end center;padding-bottom:0;position:relative}
+.swatch span{position:absolute;bottom:-22px;font-size:12px;white-space:nowrap;color:var(--muted)}
+.swatch.sel{box-shadow:0 0 0 3px var(--accent)}
+.swrow{display:flex;flex-wrap:wrap;gap:14px 16px;padding-bottom:22px}
+.pot{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:14px}
+.pot .blob{width:84px;height:84px;border-radius:50% 50% 46% 46%;box-shadow:inset 0 -8px 0 rgba(0,0,0,.12),0 0 0 1px var(--line)}
+.pots{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end;justify-content:center;margin-block:10px}
+.eq{font-family:var(--f-mono);font-size:15px;background:var(--panel2);border-radius:8px;padding:10px 12px;overflow-x:auto}
+.clockwrap{display:flex;flex-wrap:wrap;gap:18px;align-items:center}
+.clock{width:min(300px,100%);height:auto;flex:none}
+.bigval{font-family:var(--f-display);font-size:44px;font-weight:700;line-height:1}
+.qwrap{max-width:720px}
+.q{margin-bottom:14px}
+.q .opts{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.opt{text-align:left;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:9px 12px;cursor:pointer}
+.opt:hover{background:var(--panel2)}
+.opt.right{border-color:var(--good);background:var(--good-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.explain{font-size:15px;margin-top:8px;padding:8px 12px;border-left:3px solid var(--accent);background:var(--panel2)}
+.steps{display:flex;flex-direction:column;gap:8px}
+.step{display:flex;gap:10px;align-items:center;text-align:left;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:10px 12px;cursor:pointer}
+.step .n{font-family:var(--f-mono);min-width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--panel2);font-size:13px}
+.step.placed{border-color:var(--good);background:var(--good-soft);cursor:default}
+.step.placed .n{background:var(--good);color:var(--panel)}
+.step.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.sessions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.sess{border:1px solid var(--line);border-radius:9px;padding:12px;background:var(--panel);display:flex;flex-direction:column;gap:6px;min-height:150px}
+.sess b{font-family:var(--f-display);font-size:17px}
+.sess .st{font-size:13px;font-family:var(--f-mono)}
+.sess.exposed{border-color:var(--bad);background:var(--bad-soft)}
+.sess.safe{border-color:var(--good);background:var(--good-soft)}
+.timerbar{height:6px;border-radius:3px;background:var(--panel2);overflow:hidden}
+.timerbar i{display:block;height:100%;background:var(--warn);width:100%}
+
+/* checkpoint */
+.cp{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:14px;align-items:start}
+.hud{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;font-family:var(--f-mono);font-size:14px;margin-bottom:10px}
+.hud b{font-size:18px}
+.addr{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-family:var(--f-mono);font-size:15px;overflow-x:auto;white-space:nowrap}
+.cert{margin-top:12px;border:1px solid var(--line);border-radius:6px;background:var(--panel);padding:16px 18px;position:relative;background-image:repeating-linear-gradient(135deg,transparent 0 14px,var(--panel2) 14px 15px)}
+.cert h4{font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--k-ca);margin-bottom:10px}
+.cert dl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 14px;margin:0;font-size:15px}
+.cert dt{color:var(--muted);font-size:13px;padding-top:2px}
+.cert dd{margin:0;font-family:var(--f-mono);font-size:14px;overflow-wrap:anywhere}
+.chain{display:flex;flex-direction:column;gap:2px}
+.chain span::before{content:"↳ ";color:var(--muted)}
+.chain span:first-child::before{content:""}
+.sigok{color:var(--good)}.sigbad{color:var(--bad)}
+.verdicts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.verdicts .trust{grid-column:1/-1}
+.vbtn{border:2px solid var(--line);background:var(--panel);border-radius:8px;padding:10px;cursor:pointer;font-weight:700;font-size:14px}
+.vbtn:hover{border-color:var(--bad)}
+.vbtn.trust{border-color:var(--good);background:var(--good-soft)}
+.manual h4{font-size:14px;letter-spacing:.1em;text-transform:uppercase;margin:12px 0 6px;color:var(--muted)}
+.manual h4:first-child{margin-top:0}
+.manual ul{list-style:none;padding:0;margin:0;font-family:var(--f-mono);font-size:13px;display:flex;flex-direction:column;gap:3px}
+.manual li{overflow-wrap:anywhere}
+.ocsp{margin-top:6px;font-family:var(--f-mono);font-size:13px;padding:8px 10px;border-radius:6px;background:var(--panel2)}
+.strikes{display:inline-flex;gap:4px}
+.strikes i{width:14px;height:14px;border-radius:3px;border:2px solid var(--bad);display:inline-block}
+.strikes i.on{background:var(--bad)}
+.picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.picker .cert{cursor:pointer;margin:0}
+.picker .cert:hover{outline:3px solid var(--accent)}
+
+@media (max-width:900px){
+  .bench{grid-template-columns:minmax(0,1fr)}
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cp,.two,.picker{grid-template-columns:minmax(0,1fr)}
+  .sessions{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:560px){
+  .tiles,.sessions{grid-template-columns:minmax(0,1fr)}
+  .cast{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .verdicts{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .hero p{font-size:17px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <button class="brand" id="homeBtn" type="button" aria-label="Back to mission board">
+      <svg class="eye" viewBox="0 0 32 24" aria-hidden="true"><path d="M2 12C7 4 25 4 30 12C25 20 7 20 2 12Z" fill="none" stroke="var(--eve)" stroke-width="2.4"/><circle cx="16" cy="12" r="4.5" fill="var(--eve)"/></svg>
+      BEAT EVE
+    </button>
+    <span class="spacer"></span>
+    <span class="starcount" id="starCount" aria-live="polite"></span>
+  </div>
+</header>
+<main class="wrap" id="screen"></main>
+<div class="modal" id="modal" hidden><div class="modal-card" id="modalCard" role="dialog" aria-modal="true"></div></div>
+
+<script>
+(function(){
+"use strict";
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const screen=$('#screen');
+let cleanup=null, current=null;
+
+/* ---------- progress ---------- */
+const STORE='beatEve.progress.v1';
+let progress={};
+try{progress=JSON.parse(localStorage.getItem(STORE))||{};}catch(e){progress={};}
+function award(id,n){
+  if((progress[id]||0)<n){progress[id]=n;try{localStorage.setItem(STORE,JSON.stringify(progress));}catch(e){}}
+  drawStarCount();
+}
+function totalStars(){return Object.values(progress).reduce((a,b)=>a+b,0);}
+function drawStarCount(){$('#starCount').innerHTML=`${ICON.star(true)} ${totalStars()} / 27`;}
+
+/* ---------- icons ---------- */
+const ICON={
+  star:on=>`<svg viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill="${on?'var(--k-shared)':'none'}" stroke="${on?'var(--k-shared)':'var(--line)'}" stroke-width="1.6" stroke-linejoin="round"/></svg>`,
+  key:c=>`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="12" r="4.4" fill="none" stroke="${c}" stroke-width="2.6"/><path d="M11.4 12H22M18.5 12v4M21.5 12v3" fill="none" stroke="${c}" stroke-width="2.6" stroke-linecap="round"/></svg>`,
+  doc:()=>`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2.5h8l4.5 4.5v14.5H6z" fill="var(--panel)" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 2.5V7h4.5M8.5 11h7M8.5 14h7M8.5 17h5" fill="none" stroke="var(--muted)" stroke-width="1.4"/></svg>`,
+  hash:()=>`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="4" fill="var(--panel)" stroke="var(--accent)" stroke-width="1.8"/><path d="M9.5 6.5l-1.6 11M15.9 6.5l-1.6 11M6.5 10h11.5M6 14h11.5" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+  lock:(c,open)=>`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="${open?'M7.5 10V7a4.5 4.5 0 0 1 8.7-1.6':'M7.5 10V7a4.5 4.5 0 0 1 9 0v3'}" fill="none" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/><rect x="4.5" y="10" width="15" height="11" rx="2.5" fill="${c}"/><circle cx="12" cy="15.5" r="1.8" fill="var(--panel)"/></svg>`,
+  eve:()=>`<svg class="evebug" viewBox="0 0 34 26" aria-hidden="true"><path d="M2 13C8 3 26 3 32 13C26 23 8 23 2 13Z" fill="var(--eve-soft)" stroke="var(--eve)" stroke-width="2.2"/><circle cx="17" cy="13" r="5" fill="var(--eve)"/></svg>`
+};
+const starsHTML=(n,cls='stars')=>`<span class="${cls}">${[1,2,3].map(i=>ICON.star(i<=n)).join('')}</span>`;
+
+/* ---------- modal / toast ---------- */
+function modal({title,html,tone,actions}){
+  const m=$('#modal'),c=$('#modalCard');
+  c.style.setProperty('--tone',tone==='win'?'var(--good)':tone==='fail'?'var(--bad)':'var(--accent)');
+  c.innerHTML=`<h2>${esc(title)}</h2>${html||''}<div class="modal-actions">${actions.map((a,i)=>`<button type="button" class="btn ${a.primary?'primary':''}" data-i="${i}">${esc(a.label)}</button>`).join('')}</div>`;
+  m.hidden=false;
+  $$('.modal-actions button',c).forEach(b=>b.onclick=()=>{m.hidden=true;actions[+b.dataset.i].fn&&actions[+b.dataset.i].fn();});
+  const first=$('.modal-actions .primary',c)||$('.modal-actions button',c); first&&first.focus();
+}
+let toastT=null;
+function toast(msg,ms=4200){
+  let t=$('.toast'); if(t) t.remove();
+  t=document.createElement('div'); t.className='toast'; t.setAttribute('role','status'); t.innerHTML=msg; document.body.appendChild(t);
+  clearTimeout(toastT); toastT=setTimeout(()=>t.remove(),ms);
+}
+function endMission(id,stars,title,takeaways,extra=''){
+  award(id,stars);
+  const order=Object.keys(MISSIONS), next=order[order.indexOf(id)+1];
+  modal({title,tone:'win',
+    html:`<div class="bigstars">${[1,2,3].map(i=>ICON.star(i<=stars).replace('width:18px;height:18px','width:40px;height:40px')).join('')}</div>${extra}<p class="lbl">Exam-ready takeaways</p><ul>${takeaways.map(t=>`<li>${t}</li>`).join('')}</ul>`,
+    actions:[{label:'Mission board',fn:home},{label:'Play again',fn:()=>open(id)},...(next?[{label:'Next mission',primary:true,fn:()=>open(next)}]:[])]});
+}
+function failMission(id,title,html){
+  modal({title,tone:'fail',html,actions:[{label:'Mission board',fn:home},{label:'Try again',primary:true,fn:()=>open(id)}]});
+}
+
+/* ---------- missions registry ---------- */
+const CHAPTERS=[
+  {n:'Chapter I',title:'The Courier',slides:'Slides 7–12, 19–21',ids:['m1','m2','m3']},
+  {n:'Chapter II',title:'Agree, Don’t Send',slides:'Slides 9, 22',ids:['m4','m5','m6']},
+  {n:'Chapter III',title:'Who’s Really Bob?',slides:'Slides 32–40',ids:['m7','m8','m9']},
+];
+const MISSIONS={
+  m1:{title:'Shared Secret',tag:'Symmetric encryption · slide 7',blurb:'Bob already has your shared key. Get a note to him without Eve reading it.',run:()=>courier('m1')},
+  m2:{title:'The Big File',tag:'Hybrid key exchange · slides 19–21',blurb:'You’ve never met Bob and the file is 2 GB. Rebuild the six-step key exchange yourself.',run:()=>courier('m2')},
+  m3:{title:'Sign It',tag:'Digital signatures · slides 10–12',blurb:'Eve can read it. That’s fine. Bob needs proof it’s really from you.',run:()=>courier('m3')},
+  m4:{title:'Paint Lab',tag:'Diffie-Hellman idea · slide 22',blurb:'Make the same secret color as Bob without ever sending it. Then try to steal it as Eve.',run:paintLab},
+  m5:{title:'Clock Math',tag:'DH with real numbers · slides 9, 22',blurb:'Turn the mod-23 dial. Agree on a key, then race to crack one as Eve.',run:clockMath},
+  m6:{title:'Breach Day',tag:'Perfect forward secrecy · slide 22',blurb:'Eve records everything, then steals your server key. Which sessions survive?',run:breachDay},
+  m7:{title:'Get Certified',tag:'CSR, CA, RA, chain · slides 33–38',blurb:'Walk a certificate from key pair to root of trust.',run:getCertified},
+  m8:{title:'Checkpoint',tag:'Validate certificates · slides 33–40',blurb:'You’re the browser. Ten certificates. Trust or block, against the clock.',run:checkpoint},
+  m9:{title:'Mallory in the Middle',tag:'Boss: everything at once',blurb:'Pick Bob’s real key, then send a file that is secret and signed.',run:()=>courier('m9')},
+};
+function open(id){
+  if(cleanup){cleanup();cleanup=null;}
+  current=id; $('#modal').hidden=true; const t=$('.toast'); t&&t.remove();
+  window.scrollTo(0,0);
+  if(id==='home') return home();
+  MISSIONS[id].run();
+}
+function home(){
+  if(cleanup){cleanup();cleanup=null;}
+  current='home'; $('#modal').hidden=true; const t=$('.toast'); t&&t.remove();
+  screen.innerHTML=`
+  <section class="hero">
+    <div>
+      <p class="lbl">Security+ Chapter 2 · Key exchange</p>
+      <h1>BEAT<br><span>EVE</span></h1>
+      <p>Eve copies every packet on the wire. Your job is to get secrets to Bob anyway, using the same moves real protocols use.</p>
+      <div class="cta"><button class="btn primary" type="button" data-open="m1">Start mission 1</button><button class="btn" type="button" data-open="m8">Jump to Checkpoint</button></div>
+    </div>
+    <div class="stage" aria-label="Alice sends a locked box to Bob while Eve taps the wire">
+      <svg viewBox="0 0 420 200" role="img" aria-label="Alice, the wire, Eve and Bob">
+        <line x1="60" y1="70" x2="360" y2="70" stroke="var(--line)" stroke-width="4" stroke-dasharray="10 6"/>
+        <line x1="210" y1="72" x2="210" y2="128" stroke="var(--eve)" stroke-width="2.5"/>
+        <circle cx="46" cy="70" r="26" fill="var(--panel2)" stroke="var(--k-alice)" stroke-width="3"/>
+        <text x="46" y="76" text-anchor="middle" font-family="Chakra Petch, sans-serif" font-weight="700" font-size="18" fill="var(--k-alice)">A</text>
+        <circle cx="374" cy="70" r="26" fill="var(--panel2)" stroke="var(--k-bob)" stroke-width="3"/>
+        <text x="374" y="76" text-anchor="middle" font-family="Chakra Petch, sans-serif" font-weight="700" font-size="18" fill="var(--k-bob)">B</text>
+        <path d="M176 150C190 128 230 128 244 150C230 172 190 172 176 150Z" fill="var(--eve-soft)" stroke="var(--eve)" stroke-width="2.5"/>
+        <circle cx="210" cy="150" r="8" fill="var(--eve)"/>
+        <text x="210" y="192" text-anchor="middle" font-family="Chakra Petch, sans-serif" font-size="14" fill="var(--muted)">Eve copies everything</text>
+        <g><rect x="-13" y="-13" width="26" height="26" rx="5" fill="var(--k-shared)"/><circle cx="0" cy="2" r="3.5" fill="var(--panel)"/>
+          <animateTransform attributeName="transform" type="translate" values="80 70;340 70" dur="3.2s" repeatCount="indefinite"/></g>
+        <text x="46" y="122" text-anchor="middle" font-family="Chakra Petch, sans-serif" font-size="14" fill="var(--muted)">Alice (you)</text>
+        <text x="374" y="122" text-anchor="middle" font-family="Chakra Petch, sans-serif" font-size="14" fill="var(--muted)">Bob</text>
+      </svg>
+    </div>
+  </section>
+  <section class="cast" aria-label="Cast">
+    <div style="--c:var(--k-alice)"><b>Alice</b><small>You. The sender.</small></div>
+    <div style="--c:var(--k-bob)"><b>Bob</b><small>The recipient. Only he holds Bob’s private key.</small></div>
+    <div style="--c:var(--eve)"><b>Eve</b><small>Eavesdropper. Reads and keeps everything on the wire.</small></div>
+    <div style="--c:var(--k-mal)"><b>Mallory</b><small>Active attacker. Can swap keys and forge certificates.</small></div>
+  </section>
+  ${CHAPTERS.map(ch=>`
+  <section class="chapter">
+    <div class="chapter-head"><span class="num">${ch.n.toUpperCase()}</span><h2>${ch.title}</h2><span class="slides">${ch.slides}</span></div>
+    <div class="tiles">${ch.ids.map((id,i)=>{const m=MISSIONS[id];return `
+      <button class="tile" type="button" data-open="${id}">
+        <span class="row"><span class="tag">MISSION ${Object.keys(MISSIONS).indexOf(id)+1}</span>${starsHTML(progress[id]||0)}</span>
+        <h3>${m.title}</h3><p>${m.blurb}</p><span class="tag">${m.tag}</span>
+      </button>`;}).join('')}</div>
+  </section>`).join('')}
+  <p class="teacher"><b>For teachers:</b> each mission cites the Chapter 2 slides it covers and ends with exam-ready takeaways. Progress is saved in each student’s own browser. Missions run in order but any can be opened directly. Checkpoint generates a new set of certificates every play, so it works well as a repeatable warm-up or a class competition.</p>`;
+  $$('[data-open]',screen).forEach(b=>b.onclick=()=>open(b.dataset.open));
+}
+function shell(id,kicker,story){
+  const m=MISSIONS[id];
+  return `<div class="mhead"><div><div class="kicker">MISSION ${Object.keys(MISSIONS).indexOf(id)+1} · ${esc(m.tag)}</div><h2>${esc(m.title)}</h2></div>
+  <button class="btn ghost sm" type="button" data-home>← Mission board</button></div>
+  ${story?`<p class="story">${story}</p>`:''}`;
+}
+function wireHome(){$$('[data-home]',screen).forEach(b=>b.onclick=home);}
+
+/* =====================================================================
+   COURIER ENGINE — missions 1, 2, 3, 9
+   Items: messages, keys, hashes, and boxes (an item locked with a key).
+   Anyone who holds the opening key for a box can see inside it.
+   ===================================================================== */
+const KEYDEF={
+  S:{name:'Shared secret key',type:'sym',tone:'var(--k-shared)'},
+  Bpub:{name:'Bob’s public key',type:'pub',pair:'Bpriv',tone:'var(--k-bob)'},
+  Bpriv:{name:'Bob’s private key',type:'priv',pair:'Bpub',tone:'var(--k-bob)'},
+  Apub:{name:'Alice’s public key',type:'pub',pair:'Apriv',tone:'var(--k-alice)'},
+  Apriv:{name:'Alice’s private key',type:'priv',pair:'Apub',tone:'var(--k-alice)'},
+  Mpub:{name:'Mallory’s public key',type:'pub',pair:'Mpriv',tone:'var(--k-mal)'},
+  Mpriv:{name:'Mallory’s private key',type:'priv',pair:'Mpub',tone:'var(--k-mal)'},
+};
+const opener=k=>KEYDEF[k].type==='sym'?k:KEYDEF[k].pair;
+let UID=0;
+const mk=o=>Object.assign({uid:++UID},o);
+const Msg=(label,big)=>mk({kind:'msg',label,big});
+const Key=k=>mk({kind:'key',key:k});
+const Hash=it=>mk({kind:'hash',of:it});
+const Box=(lock,inner)=>mk({kind:'box',lock,inner});
+const isBig=it=>it.kind==='msg'?it.big:it.kind==='box'?isBig(it.inner):false;
+
+function reveal(received,keys){
+  const K=new Set(keys),pool=[...received],opened=new Set();
+  let changed=true;
+  while(changed){
+    changed=false;
+    for(let i=0;i<pool.length;i++){
+      const it=pool[i];
+      if(it.kind==='key'&&!K.has(it.key)){K.add(it.key);changed=true;}
+      if(it.kind==='box'&&!opened.has(it.uid)&&K.has(opener(it.lock))){opened.add(it.uid);pool.push(it.inner);changed=true;}
+    }
+  }
+  return {pool,K,opened};
+}
+const hasMsg=v=>v.pool.some(i=>i.kind==='msg');
+const hasSig=v=>v.pool.some(i=>i.kind==='box'&&i.lock==='Apriv'&&v.opened.has(i.uid)&&i.inner.kind==='hash'&&i.inner.of.kind==='msg');
+
+const COURIER={
+  m1:{
+    story:'You and Bob swapped a secret key in person last week. Now you need to send him tonight’s meeting spot. Everything you put on the wire, Eve copies.',
+    inv:()=>[Msg('Meeting spot: “Library, 3 PM”',false),Key('S')],
+    bob:['S','Bpub','Apub'],eve:['Bpub','Apub'],goals:['conf'],
+    hints:['Tap the note, then lock it with a key.','Bob already has the shared key, so he can open a box locked with it. Eve can’t.','Lock the note with the Shared secret key and send the locked box. Never send the key itself.'],
+    takeaways:['<b>Symmetric encryption</b> uses one shared secret key to both encrypt and decrypt (AES, DES, IDEA, RC4).','It is fast and good for bulk data, which is why it protects the actual payload in real protocols.','Its weak spot is <b>key distribution</b>. If the key ever crosses the wire in the open, the attacker has it. This mission only worked because Bob got the key in person.']
+  },
+  m2:{
+    story:'Bob is overseas. You’ve never met, so he doesn’t have any shared key. You do have Bob’s public key from his digital certificate. The project file is 2 GB.',
+    inv:()=>[Msg('Project files (2 GB)',true),Key('S'),Key('Bpub')],
+    bob:['Bpriv','Bpub','Apub'],eve:['Bpub','Apub'],goals:['conf'],
+    hints:['Asymmetric keys are too slow for a 2 GB file. Lock the big file with the fast Shared secret key.','Bob can’t open that box without the shared key. How can the key itself travel safely? Lock the key with Bob’s public key.','Send both boxes: the file locked with the shared key, and the shared key locked with Bob’s public key. Only Bob’s private key opens that second box.'],
+    takeaways:['<b>Hybrid key exchange</b> (slides 19–21): the sender encrypts the plaintext with a symmetric shared key, then encrypts that shared key with the <b>recipient’s public key</b>, and sends both.','The recipient decrypts the shared key with <b>their own private key</b>, then decrypts the ciphertext with the shared key.','Asymmetric encryption is slow, so it is used on small data such as keys. Symmetric handles the bulk.','Encrypting the file does not encrypt the key, and encrypting the key does not encrypt the file. You needed both locks.','The recipient’s private key never leaves the recipient.']
+  },
+  m3:{
+    story:'Your press release is public, so it’s fine if Eve reads it. But Bob needs proof that it came from you and that nobody changed a word. That’s what a digital signature does.',
+    inv:()=>[Msg('Press release (300 MB video)',true),Key('Apriv'),Key('Apub')],
+    bob:['Bpriv','Bpub','Apub'],eve:['Bpub','Apub'],goals:['read','sig'],
+    hints:['A signature starts with a hash (digest) of the message. Tap the press release and press Hash it.','Lock the hash with a key only you have. Anyone with your public key can open that box, which is the point: it proves you locked it.','Send the press release and the hash locked with your private key. Bob hashes the release himself and compares the two digests.'],
+    takeaways:['A <b>digital signature</b> combines hashing with public key cryptography (DSA, ECDSA, RSA).','The sender hashes the message and encrypts the digest with <b>the sender’s private key</b>. The recipient decrypts it with <b>the sender’s public key</b>, hashes the message again, and checks that the two digests match.','Signatures give <b>integrity, authentication and non-repudiation</b>. They do not give confidentiality. Eve could read the release the whole time.','Hashing is one-way. It isn’t encryption, and a digest can’t be turned back into the message.']
+  },
+  m9:{
+    story:'Mallory sits on the wire this time. She reads everything and can hand you fake keys. First find Bob’s genuine public key. Then send the merger plan so that only Bob can read it and Bob can prove it came from you.',
+    bob:['Bpriv','Bpub','Apub'],goals:['conf','sig'],villain:'Mallory',
+    hints:['Big file: lock it with the Shared secret key.','Lock the Shared secret key with Bob’s public key so only Bob can recover it.','Hash the merger plan and lock the hash with your private key. That’s your signature. Send all three boxes.'],
+    takeaways:['Public keys need proof of who owns them. Without a certificate from a trusted CA, an attacker can swap in their own key and read everything: a <b>man-in-the-middle</b> attack.','A certificate chain that ends at a root in your trust store is what lets you believe a public key really is Bob’s.','Real secure messaging combines everything: symmetric encryption for bulk data, the recipient’s public key to protect the shared key, and the sender’s private key to sign a hash.']
+  }
+};
+
+function courier(id){
+  const cfg=COURIER[id];
+  if(id==='m9') return bossPick(cfg);
+  runBench(id,cfg,cfg.inv(),cfg.eve,{});
+}
+
+function bossPick(cfg){
+  const today='14 Mar 2026';
+  const opts=shuffle([
+    {real:true,cn:'bob.lumenmail.net',issuer:['Polaris DV CA','Polaris Global Root R2'],valid:'10 Jan 2026 → 12 Feb 2027',fp:'4C:9A:17:E0'},
+    {real:false,why:'self',cn:'bob.lumenmail.net',issuer:['bob.lumenmail.net (self-signed)'],valid:'13 Mar 2026 → 13 Mar 2036',fp:'D1:03:8B:6F'},
+    {real:false,why:'shady',cn:'bob.lumenmail.net',issuer:['ShadyTrust Issuing CA','ShadyTrust Root'],valid:'01 Mar 2026 → 01 Mar 2027',fp:'77:E2:C4:10'},
+  ]);
+  screen.innerHTML=shell('m9')+`<p class="story">${cfg.story}</p>
+  <div class="two" style="margin-bottom:14px">
+    <div class="card"><h3>Three keys arrived, all claiming to be Bob’s</h3><p class="muted" style="margin:0">Today is ${today}. Pick the certificate whose public key you’ll use. Check the issuer chain against your trust store.</p></div>
+    <div class="card manual"><h4>Your trust store (root CAs)</h4><ul><li>Veridian Root CA</li><li>Polaris Global Root R2</li><li>Anchorline Root X1</li></ul></div>
+  </div>
+  <div class="picker">${opts.map((o,i)=>`<div class="cert" role="button" tabindex="0" data-i="${i}"><h4>Certificate ${i+1}</h4><dl>
+    <dt>Subject</dt><dd>${o.cn}</dd><dt>Issued by</dt><dd><div class="chain">${o.issuer.map(x=>`<span>${x}</span>`).join('')}</div></dd>
+    <dt>Valid</dt><dd>${o.valid}</dd><dt>Key</dt><dd>${o.fp}…</dd></dl></div>`).join('')}</div>`;
+  wireHome();
+  $$('.picker .cert',screen).forEach(el=>{
+    const go=()=>{
+      const o=opts[+el.dataset.i];
+      const inv=[Msg('Merger plan (1 GB)',true),Key('S'),Key(o.real?'Bpub':'Mpub'),Key('Apriv')];
+      const eve=['Bpub','Apub','Mpub'].concat(o.real?[]:['Mpriv']);
+      runBench('m9',cfg,inv,eve,{labels:{Mpub:'Bob’s public key (from cert)',Bpub:'Bob’s public key (from cert)'},fake:!o.real,fakeWhy:o.why});
+    };
+    el.onclick=go; el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};
+  });
+}
+
+function runBench(id,cfg,inv,eveKeys,opt){
+  const villain=cfg.villain||'Eve';
+  const st={inv,sel:null,sent:[],mistakes:0,busy:false,log:[],hint:0,over:false};
+  const kname=k=>(opt.labels&&opt.labels[k])||KEYDEF[k].name;
+  const short=it=>it.kind==='msg'?it.label:it.kind==='key'?kname(it.key):it.kind==='hash'?`hash of ${short(it.of)}`:`box locked with ${kname(it.lock)}`;
+  const digest=it=>{let h=2166136261;const s=short(it.of)+it.of.uid;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return ('00000000'+(h>>>0).toString(16)).slice(-8)+'…';};
+  const GOALTXT={conf:`Bob reads the file, ${villain} learns nothing`,read:'Bob receives the release',sig:'Bob can verify it’s from you'};
+
+  function card(it,view,who){
+    if(it.kind==='msg'){
+      const leak=who==='eve'&&cfg.goals.includes('conf');
+      return `<div class="it ${leak?'leak':''}">${ICON.doc()}<div>${leak?`<span class="leaktag">${villain.toUpperCase()} CAN READ THIS</span>`:''}<b>${esc(it.label)}</b><small>${it.big?'Large file':'Short note'}</small></div></div>`;
+    }
+    if(it.kind==='key'){
+      const d=KEYDEF[it.key],leak=who==='eve'&&(d.type==='sym'||it.key==='Apriv');
+      const tone=(opt.labels&&opt.labels[it.key])?'var(--k-bob)':d.tone;
+      const badge=d.type==='priv'?'<span class="badge priv">PRIVATE</span>':d.type==='pub'?'<span class="badge pub">PUBLIC</span>':'<span class="badge sec">SECRET</span>';
+      return `<div class="it key ${leak?'leak':''}" style="--kc:${tone}">${ICON.key(tone)}<div>${leak?`<span class="leaktag">${villain.toUpperCase()} HAS THIS KEY</span>`:''}<b>${esc(kname(it.key))}${badge}</b><small>${d.type==='sym'?'Locks and unlocks':d.type==='pub'?'Anyone may have this':'Must never leave its owner'}</small></div></div>`;
+    }
+    if(it.kind==='hash') return `<div class="it">${ICON.hash()}<div><b>Hash digest <span class="mono" style="font-weight:400">${digest(it)}</span></b><small>of ${esc(short(it.of))} · small, one-way</small></div></div>`;
+    const tone=(opt.labels&&opt.labels[it.lock])?'var(--k-bob)':KEYDEF[it.lock].tone;
+    const isOpen=who==='alice'||view.opened.has(it.uid);
+    return `<div class="it box" style="--kc:${tone}"><div class="box-head">${ICON.lock(tone,isOpen&&who!=='alice')}<span>Locked with ${esc(kname(it.lock))}</span></div>
+      ${isOpen?`<div class="box-in">${card(it.inner,view,who)}</div>`:`<div class="box-sealed">Can’t open. Needs ${esc(KEYDEF[opener(it.lock)].name)}.</div>`}</div>`;
+  }
+
+  function render(){
+    const eve=reveal(st.sent,eveKeys),bob=reveal(st.sent,cfg.bob);
+    const done={conf:hasMsg(bob)&&!hasMsg(eve)&&!eve.K.has('S'),read:hasMsg(bob),sig:hasSig(bob)};
+    const sel=st.inv.find(i=>i.uid===st.sel);
+    const keysOnDesk=st.inv.filter(i=>i.kind==='key'&&(!sel||i.uid!==sel.uid));
+    screen.innerHTML=shell(id)+`<p class="story">${cfg.story}</p>
+    <div class="goals">${cfg.goals.map(g=>`<span class="goal ${done[g]?'done':''}"><i></i>${GOALTXT[g]}</span>`).join('')}
+      <button class="btn sm ghost" type="button" id="hintBtn">${st.hint<cfg.hints.length?'Hint':'No more hints'}</button>
+      <button class="btn sm ghost" type="button" id="resetBtn">Start over</button></div>
+    ${st.hint?`<div class="hintbox">${cfg.hints.slice(0,st.hint).map((h,i)=>`<div><b>Hint ${i+1}.</b> ${h}</div>`).join('')}</div>`:''}
+    <div class="bench">
+      <section class="panel" aria-label="Alice's desk"><h3><span class="dot" style="--c:var(--k-alice)"></span>Your desk (Alice)</h3>
+        <div class="items">${st.inv.map(it=>`<div class="deskitem ${st.sel===it.uid?'sel':''}" role="button" tabindex="0" aria-pressed="${st.sel===it.uid}" data-uid="${it.uid}">${card(it,null,'alice')}${st.sent.includes(it)?'<span class="sentmark">Sent to Bob</span>':''}</div>`).join('')}</div>
+        <div class="actions">${sel?`
+          <div class="row"><span class="lbl">Lock it with</span>${keysOnDesk.length?keysOnDesk.map(k=>{const tone=(opt.labels&&opt.labels[k.key])?'var(--k-bob)':KEYDEF[k.key].tone;return `<button type="button" class="keybtn" style="--kc:${tone}" data-lock="${k.key}">${ICON.key(tone)}${esc(kname(k.key))}</button>`;}).join(''):'<span class="empty">no other keys</span>'}</div>
+          <div class="row"><button type="button" class="btn" id="hashBtn">Hash it</button><button type="button" class="btn primary" id="sendBtn">Send to Bob →</button></div>`
+          :'<span class="empty">Tap an item on your desk to lock it, hash it or send it.</span>'}</div>
+      </section>
+      <section class="panel" aria-label="The wire"><h3 class="evehead">The wire · ${villain}’s notebook</h3>
+        <div class="pipe" id="pipe"><div class="line"></div><div class="endA" style="--c:var(--k-alice)"></div><div class="endB" style="--c:var(--k-bob)"></div><div class="tap"></div>${ICON.eve()}</div>
+        <div class="items">${st.sent.length?st.sent.map(it=>card(it,eve,'eve')).join(''):`<span class="empty">${villain} has copied nothing yet.</span>`}</div>
+      </section>
+      <section class="panel" aria-label="Bob's inbox"><h3><span class="dot" style="--c:var(--k-bob)"></span>Bob’s inbox</h3>
+        <div class="items">${st.sent.length?st.sent.map(it=>card(it,bob,'bob')).join(''):'<span class="empty">Nothing received yet.</span>'}</div>
+      </section>
+    </div>
+    <div class="log" aria-label="Activity log">${st.log.slice().reverse().map(l=>`<div>${esc(l)}</div>`).join('')}</div>`;
+    wireHome();
+    $('#hintBtn').onclick=()=>{if(st.hint<cfg.hints.length){st.hint++;render();}};
+    $('#resetBtn').onclick=()=>runBench(id,cfg,id==='m9'?[Msg('Merger plan (1 GB)',true),Key('S'),Key(opt.fake?'Mpub':'Bpub'),Key('Apriv')]:cfg.inv(),eveKeys,opt);
+    $$('.deskitem',screen).forEach(el=>{
+      const f=()=>{if(st.busy)return;st.sel=st.sel===+el.dataset.uid?null:+el.dataset.uid;render();const again=$(`.deskitem[data-uid="${el.dataset.uid}"]`);again&&again.focus();};
+      el.onclick=f; el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f();}};
+    });
+    $$('[data-lock]',screen).forEach(b=>b.onclick=()=>lock(sel,b.dataset.lock));
+    const hb=$('#hashBtn'); hb&&(hb.onclick=()=>hash(sel));
+    const sb=$('#sendBtn'); sb&&(sb.onclick=()=>send(sel));
+  }
+  function lock(it,k){
+    if(st.busy)return;
+    const d=KEYDEF[k];
+    if(d.type!=='sym'&&isBig(it)){
+      st.mistakes++;
+      toast(`<b>Too big for ${esc(kname(k))}.</b> Asymmetric encryption is slow and meant for small data like keys or hashes. Use the fast symmetric key for large files.`);
+      return;
+    }
+    if(it.kind==='key'&&KEYDEF[it.key].type==='priv'){
+      st.mistakes++;
+      toast('<b>Leave your private key alone.</b> It never gets packaged up or sent anywhere, even locked.');
+      return;
+    }
+    const b=Box(k,it); st.inv.push(b); st.sel=b.uid;
+    st.log.push(`You locked “${short(it)}” with ${kname(k)}.`);
+    render();
+  }
+  function hash(it){
+    if(st.busy)return;
+    if(it.kind==='hash'){toast('It’s already a digest. Hashing again doesn’t help here.');return;}
+    const h=Hash(it); st.inv.push(h); st.sel=h.uid;
+    st.log.push(`You hashed “${short(it)}”. The digest is small and one-way.`);
+    render();
+  }
+  function send(it){
+    if(st.busy||st.over)return;
+    if(it.kind==='key'&&KEYDEF[it.key].type==='priv'){
+      st.over=true;
+      return failMission(id,'You sent a private key',`<p>${esc(kname(it.key))} went out over the wire, and ${villain} copied it. Anyone holding it can now sign as you and open anything locked with your public key.</p><p><b>Rule:</b> a private key is kept secret and is never shared with anyone, including the person you trust.</p>`);
+    }
+    if(st.sent.includes(it)){toast('Bob already has that one.');return;}
+    st.busy=true;
+    const pipe=$('#pipe'),p=document.createElement('div');
+    p.className='packet'; pipe.appendChild(p);
+    const bug=$('.evebug',pipe); setTimeout(()=>bug&&bug.classList.add('flash'),420);
+    const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setTimeout(()=>{
+      st.busy=false; st.sent.push(it); st.sel=null;
+      st.log.push(`Sent “${short(it)}”. ${villain} copied it.`);
+      render(); evaluate(it);
+    },reduce?50:960);
+  }
+  function evaluate(last){
+    const eve=reveal(st.sent,eveKeys),bob=reveal(st.sent,cfg.bob);
+    const conf=cfg.goals.includes('conf');
+    if(opt.fake&&st.sent.some(i=>i.kind==='box'&&i.lock==='Mpub')){
+      st.over=true;
+      return failMission(id,'Mallory swapped the key',`<p>The certificate you picked was ${opt.fakeWhy==='self'?'<b>self-signed</b>: nobody but “Bob” vouched for it':'issued by <b>ShadyTrust</b>, a CA that isn’t in your trust store'}. The key inside belonged to Mallory.</p><p>She opened your box, copied what was inside, re-locked it with Bob’s real public key and passed it on. Bob noticed nothing. This is a <b>man-in-the-middle attack</b>.</p><p>Choose the certificate whose chain ends at a root in your trust store.</p>`);
+    }
+    if(eve.pool.some(i=>i.kind==='key'&&i.key==='Apriv')||bob.pool.some(i=>i.kind==='key'&&i.key==='Apriv')){
+      st.over=true;
+      return failMission(id,'Your private key left the building','<p>Private keys are never shared with anyone, not even Bob.</p>');
+    }
+    if(conf&&eve.K.has('S')){
+      st.over=true;
+      return failMission(id,`${villain} has the shared key`,`<p>The Shared secret key crossed the wire where ${villain} could open it. Anything locked with it is now readable to ${villain}, past and future.</p><p>This is the core problem with symmetric encryption: <b>secure distribution of the key</b>. ${id==='m1'?'Bob already had the key. There was no reason to send it.':'Protect the key itself by locking it with Bob’s public key.'}</p>`);
+    }
+    if(conf&&hasMsg(eve)){
+      st.over=true;
+      return failMission(id,`${villain} read your file`,`<p>“${esc(COURIER_MSG(st))}” reached ${villain} in a form ${villain} could read. Lock it before it goes on the wire.</p>`);
+    }
+    if(last.kind==='box'&&last.lock==='Apub') toast('Only <b>your private key</b> opens a box locked with your public key, so Bob can’t open it. To prove something came from you, lock it with your <b>private</b> key.',6000);
+    if(last.kind==='box'&&last.lock==='Apriv'&&last.inner.kind!=='hash') toast('Anyone with your public key can open that box, so it isn’t secret.',5000);
+    const ok={conf:hasMsg(bob)&&!hasMsg(eve),read:hasMsg(bob),sig:hasSig(bob)};
+    if(cfg.goals.every(g=>ok[g])){
+      st.over=true;
+      const stars=st.mistakes===0&&st.hint<=1?3:st.mistakes<=2&&st.hint<=2?2:1;
+      const n=st.sent.length;
+      const verify=cfg.goals.includes('sig')?`<p class="eq">Bob: decrypt signature with Alice’s public key → digest ${'✓'}<br>Bob: hash the file himself → same digest ✓<br>Match. The file is unchanged and came from Alice.</p>`:'';
+      setTimeout(()=>endMission(id,stars,id==='m9'?'Mallory beaten':'Delivered',cfg.takeaways,`<p>${n} item${n>1?'s':''} sent, ${st.mistakes} mistake${st.mistakes===1?'':'s'}, ${st.hint} hint${st.hint===1?'':'s'}.</p>${verify}`),350);
+    }
+  }
+  const COURIER_MSG=s=>s.inv.find(i=>i.kind==='msg').label;
+  render();
+}
+
+/* =====================================================================
+   MISSION 4 — PAINT LAB (Diffie-Hellman color analogy)
+   ===================================================================== */
+function paintLab(){
+  const COMMON={name:'Sun yellow',rgb:[238,198,52]};
+  const SECRETS=[{name:'Crimson',rgb:[196,26,60]},{name:'Cobalt',rgb:[28,72,204]},{name:'Teal',rgb:[0,150,140]},{name:'Plum',rgb:[122,38,142]},{name:'Forest',rgb:[30,112,52]}];
+  const mix=(...cs)=>[0,1,2].map(i=>Math.round(cs.reduce((a,c)=>a+c[i],0)/cs.length));
+  const css=c=>`rgb(${c.join(',')})`;
+  const st={step:1,a:null,b:null,mistakes:0,evePot:[],eveTries:0};
+  function pot(c,label,sub){return `<div class="pot"><div class="blob" style="background:${css(c)}"></div><b>${label}</b>${sub?`<small class="muted">${sub}</small>`:''}</div>`;}
+  function render(){
+    const A=st.a&&mix(COMMON.rgb,st.a.rgb), B=st.b&&mix(COMMON.rgb,st.b.rgb);
+    const shared=st.a&&st.b&&mix(COMMON.rgb,st.a.rgb,st.b.rgb);
+    let body='';
+    if(st.step===1){
+      body=`<div class="card"><h3>1. Pick your secret paint</h3><p>Everyone, Eve included, knows the public starter paint: <b>${COMMON.name}</b>. Your secret color never leaves your room.</p>
+      <div class="swrow">${SECRETS.map((s,i)=>`<button type="button" class="swatch" style="background:${css(s.rgb)}" data-s="${i}" aria-label="${s.name}"><span>${s.name}</span></button>`).join('')}</div></div>`;
+    }else if(st.step===2){
+      body=`<div class="two"><div class="card"><h3>2. Mix and send</h3><p>You mixed your secret into the public yellow. Mixing is easy. Unmixing is practically impossible. That’s what makes this safe to send.</p>
+        <div class="pots">${pot(COMMON.rgb,'Public yellow')}${pot(st.a.rgb,'Your secret','stays home')}${pot(A,'Your public mix','goes on the wire')}</div>
+        <button type="button" class="btn primary" id="sendMix">Send my mix to Bob →</button></div>
+        <div class="card"><h3>Bob is doing the same</h3><p class="muted">He picked his own secret paint and mixed it with the same public yellow. You’ll never see his secret.</p></div></div>`;
+    }else if(st.step===3){
+      body=`<div class="two"><div class="card"><h3>3. Bob’s mix arrived</h3><p>Eve saw it go by, just like she saw yours. What do you add to <b>Bob’s mix</b> to make the shared secret?</p>
+        <div class="pots">${pot(B,'Bob’s public mix','from the wire')}</div>
+        <div class="choices"><button type="button" class="btn" data-add="secret">Add my secret paint</button><button type="button" class="btn" data-add="common">Add more public yellow</button><button type="button" class="btn" data-add="mix">Add my public mix</button></div></div>
+        <div class="card"><h3>On the wire</h3><div class="pots">${pot(COMMON.rgb,'Public yellow')}${pot(A,'Your mix')}${pot(B,'Bob’s mix')}</div><p class="muted" style="margin:0">Eve has all three of these.</p></div></div>`;
+    }else if(st.step===4){
+      const evec=st.evePot.length?mix(...st.evePot):null;
+      const dist=evec?Math.hypot(...evec.map((v,i)=>v-shared[i])):null;
+      const match=evec?Math.min(99,Math.max(0,Math.round(100-dist/1.6))):0;
+      body=`<div class="two"><div class="card"><h3>Same color, never sent</h3><p>You added your secret to Bob’s mix. Bob added his secret to yours. Both pots hold yellow + your secret + Bob’s secret.</p>
+        <div class="pots">${pot(shared,'Your result')}${pot(shared,'Bob’s result')}</div><p class="eq">yellow + mine + Bob’s = yellow + Bob’s + mine</p></div>
+        <div class="card"><h3>Now you’re Eve</h3><p>You have the public yellow and both public mixes. Pour cups into your pot and try to match the shared color exactly.</p>
+          <div class="pots">${pot(shared,'Target','the shared secret')}${evec?pot(evec,'Eve’s pot',`${st.evePot.length} cup${st.evePot.length>1?'s':''} · ${match}% match`):`<div class="pot"><div class="blob" style="background:var(--panel2)"></div><b>Eve’s pot</b><small class="muted">empty</small></div>`}</div>
+          <div class="choices"><button type="button" class="btn sm" data-eve="c">+ public yellow</button><button type="button" class="btn sm" data-eve="a">+ Alice’s mix</button><button type="button" class="btn sm" data-eve="b">+ Bob’s mix</button><button type="button" class="btn sm ghost" data-eve="x">Empty pot</button></div>
+          <p class="muted" style="font-size:14px">Every cup Eve owns already has yellow in it, so her pot always has too much yellow. Close isn’t good enough: a key has to match exactly.</p>
+          <button type="button" class="btn primary" id="finish" ${st.eveTries>=3?'':'disabled'}>${st.eveTries>=3?'Finish mission':`Pour ${3-st.eveTries} more cup${3-st.eveTries>1?'s':''} to finish`}</button></div></div>`;
+    }
+    screen.innerHTML=shell('m4')+`<p class="story">You and Bob need the same secret color, but every can of paint you send, Eve copies. This is the idea behind <b>Diffie-Hellman key agreement</b>.</p>`+body;
+    wireHome();
+    $$('[data-s]',screen).forEach(b=>b.onclick=()=>{st.a=SECRETS[+b.dataset.s];st.b=pick(SECRETS.filter(s=>s!==st.a));st.step=2;render();});
+    const sm=$('#sendMix'); sm&&(sm.onclick=()=>{st.step=3;render();});
+    $$('[data-add]',screen).forEach(b=>b.onclick=()=>{
+      const v=b.dataset.add;
+      if(v==='secret'){st.step=4;render();return;}
+      st.mistakes++;
+      toast(v==='common'?'Extra public yellow is something Eve could add too. Only your <b>secret</b> gives you something Eve doesn’t have.':'Your public mix is on the wire, so Eve has it too. Add something only <b>you</b> have.');
+    });
+    $$('[data-eve]',screen).forEach(b=>b.onclick=()=>{
+      const v=b.dataset.eve;
+      if(v==='x'){st.evePot=[];}else{st.evePot.push(v==='c'?COMMON.rgb:v==='a'?mix(COMMON.rgb,st.a.rgb):mix(COMMON.rgb,st.b.rgb));st.eveTries++;}
+      render();
+    });
+    const fin=$('#finish'); fin&&(fin.onclick=()=>endMission('m4',st.mistakes===0?3:st.mistakes===1?2:1,'Key agreed',[
+      'In <b>Diffie-Hellman</b> both sides compute the same secret. The secret itself is never sent, so there’s nothing on the wire to steal.',
+      'The starter value and both mixes are public. Security comes from the fact that mixing is easy and unmixing is hard. The next mission shows the real math behind “unmixing”.',
+      'This is <b>key agreement</b>, not key exchange. Slide 22 calls it out: with PFS, keys are never exchanged. The stations agree on a key value.']));
+  }
+  render();
+}
+
+/* =====================================================================
+   MISSION 5 — CLOCK MATH (DH with modular arithmetic)
+   ===================================================================== */
+function clockMath(){
+  const p=23,g=5;
+  const powmod=(b,e,m)=>{let r=1;b%=m;while(e>0){if(e&1)r=r*b%m;b=b*b%m;e>>=1;}return r;};
+  const st={phase:1,v:1,n:0,A:null,b:rnd(3,19),B:null,v2:1,k:0,mistakes:0,eveA:null,eveV:1,eveN:0,eveStart:0,eveTime:null,bits:2048,hist:[]};
+  st.B=powmod(g,st.b,p);
+  let timer=null;
+  function clock(val,mult,label){
+    const R=120,cx=150,cy=150;
+    const ticks=[...Array(p).keys()].map(i=>{const a=i/p*2*Math.PI-Math.PI/2,x=cx+Math.cos(a)*R,y=cy+Math.sin(a)*R,tx=cx+Math.cos(a)*(R+17),ty=cy+Math.sin(a)*(R+17);
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${i===val?9:3.5}" fill="${i===val?'var(--accent)':'var(--line)'}"/><text x="${tx.toFixed(1)}" y="${(ty+4).toFixed(1)}" text-anchor="middle" font-size="11" font-family="JetBrains Mono, monospace" fill="${i===val?'var(--accent)':'var(--muted)'}" font-weight="${i===val?700:400}">${i}</text>`;}).join('');
+    const a=val/p*2*Math.PI-Math.PI/2;
+    return `<svg class="clock" viewBox="0 0 300 300" role="img" aria-label="Mod ${p} dial pointing at ${val}"><circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="var(--line)" stroke-width="2"/>${ticks}
+      <line x1="${cx}" y1="${cy}" x2="${(cx+Math.cos(a)*(R-16)).toFixed(1)}" y2="${(cy+Math.sin(a)*(R-16)).toFixed(1)}" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="${cx}" cy="${cy}" r="6" fill="var(--accent)"/></svg>`;
+  }
+  const stepLine=(prev,m)=>`${prev} × ${m} = ${prev*m} → ${prev*m} mod ${p} = ${(prev*m)%p}`;
+  function render(){
+    let body='';
+    if(st.phase===1){
+      body=`<div class="card"><h3>1. Turn the dial to make your secret</h3>
+      <p>Public numbers everyone knows: <b>p = ${p}</b> (the dial has ${p} positions, 0 to 22) and <b>g = ${g}</b>. Start at 1. Each turn multiplies by ${g} and wraps around the dial. How many times you turn is <b>your secret</b>. Turn it 3 to 20 times.</p>
+      <div class="clockwrap">${clock(st.v,g,'your dial')}<div>
+        <p class="lbl">Turns so far (secret)</p><div class="bigval">${st.n}</div>
+        <p class="lbl" style="margin-top:12px">Dial shows</p><div class="bigval">${st.v}</div>
+        <div class="eq" style="margin-top:12px">${st.hist.length?esc(st.hist[st.hist.length-1]):'Start: 1'}</div>
+        <div class="choices"><button type="button" class="btn" id="turn">Turn × ${g}</button><button type="button" class="btn primary" id="lockin" ${st.n>=3&&st.n<=20?'':'disabled'}>Send ${st.v} to Bob</button></div></div></div></div>`;
+    }else if(st.phase===2){
+      body=`<div class="two"><div class="card"><h3>2. Build the shared key</h3>
+        <p>You sent <b>A = ${st.A}</b>. Bob sent back <b>B = ${st.B}</b>. Eve saw both.</p>
+        <p>Now start at 1 again and multiply by <b>Bob’s ${st.B}</b> exactly as many times as your secret: <b>${st.n}</b>.</p>
+        <div class="clockwrap">${clock(st.v2,st.B,'shared-key dial')}<div><p class="lbl">Turns</p><div class="bigval">${st.k} / ${st.n}</div>
+        <div class="eq" style="margin-top:12px">${st.hist.length?esc(st.hist[st.hist.length-1]):'Start: 1'}</div>
+        <div class="choices"><button type="button" class="btn" id="turn2">Turn × ${st.B}</button><button type="button" class="btn primary" id="lock2" ${st.k?'':'disabled'}>Lock in ${st.v2}</button></div></div></div></div>
+        <div class="card"><h3>What each person knows</h3><div class="eq">Public: p = ${p}, g = ${g}<br>You sent: A = ${g}<sup>${st.n}</sup> mod ${p} = ${st.A}<br>Bob sent: B = ${g}<sup>b</sup> mod ${p} = ${st.B}<br><br>Your secret: ${st.n}<br>Bob’s secret: hidden<br>Eve knows: p, g, A, B</div></div></div>`;
+    }else if(st.phase===3){
+      const t=st.eveTime!=null?st.eveTime:((performance.now()-st.eveStart)/1000);
+      body=`<div class="two"><div class="card"><h3>3. Switch sides. You’re Eve.</h3>
+        <p>A new Alice sent <b>A = ${st.eveA}</b> using the same p = ${p}, g = ${g}. Find her secret number of turns. Turn the dial until it lands on ${st.eveA}, then call it.</p>
+        <div class="clockwrap">${clock(st.eveV,g,'Eve’s brute force')}<div><p class="lbl">Guess (turns)</p><div class="bigval">${st.eveN}</div><p class="lbl" style="margin-top:12px">Time</p><div class="bigval mono" id="eveClock">${t.toFixed(1)}s</div>
+        <div class="choices"><button type="button" class="btn" id="eturn">Turn × ${g}</button><button type="button" class="btn primary" id="ecall">It’s ${st.eveN}!</button></div></div></div></div>
+        <div class="card"><h3>Why real Eve loses</h3><p>With a ${p}-position dial, trying every turn count takes seconds. Real Diffie-Hellman uses a prime <b>p</b> that is thousands of bits long. Pick a key length:</p>
+          <div class="choices">${[16,32,64,128,256,2048].map(b=>`<button type="button" class="btn sm ${st.bits===b?'primary':''}" data-bits="${b}">${b}-bit</button>`).join('')}</div>
+          <p class="eq" style="margin-top:12px">${bruteText(st.bits)}</p>
+          <p class="muted" style="font-size:14px;margin:0">Real attacks use smarter math than plain guessing, which is why DH groups need 2048 bits or more while ECDHE gets the same strength from about 256 bits. Either way, the lesson from slide 9 holds: longer keys, fewer successful attacks.</p></div></div>`;
+    }
+    screen.innerHTML=shell('m5')+`<p class="story">Real Diffie-Hellman replaces paint with <b>modular arithmetic</b>: clock math, where numbers wrap around after p. Going forward around the dial is easy. Working backward from where it stopped to how many turns it took is the hard problem (the discrete logarithm).</p>`+body;
+    wireHome();
+    const tu=$('#turn'); tu&&(tu.onclick=()=>{if(st.n>=22){toast('That’s a full lap. 22 turns brings the dial back to 1.');}st.hist.push(stepLine(st.v,g));st.v=st.v*g%p;st.n++;render();});
+    const li=$('#lockin'); li&&(li.onclick=()=>{while(st.b===st.n){st.b=rnd(3,19);}st.B=powmod(g,st.b,p);st.A=st.v;st.phase=2;st.hist=[];render();});
+    const t2=$('#turn2'); t2&&(t2.onclick=()=>{st.hist.push(stepLine(st.v2,st.B));st.v2=st.v2*st.B%p;st.k++;render();});
+    const l2=$('#lock2'); l2&&(l2.onclick=()=>{
+      const bobKey=powmod(st.A,st.b,p);
+      if(st.k!==st.n||st.v2!==bobKey){
+        st.mistakes++;
+        toast(`Your dial says ${st.v2}, Bob’s says ${bobKey}. You need exactly ${st.n} turns of × ${st.B}, the same count as your secret. Try again.`,6000);
+        st.v2=1;st.k=0;st.hist=[];render();return;
+      }
+      modal({title:`Both got ${bobKey}`,tone:'win',html:`<p class="eq">You: B<sup>a</sup> mod p = ${st.B}<sup>${st.n}</sup> mod ${p} = ${st.v2}<br>Bob: A<sup>b</sup> mod p = ${st.A}<sup>${st.b}</sup> mod ${p} = ${bobKey}</p><p>Both equal g<sup>ab</sup> mod p. The shared key ${bobKey} was never sent. Bob’s secret was ${st.b}.</p><p>Next: be Eve and try to crack one.</p>`,
+        actions:[{label:'Play Eve',primary:true,fn:()=>{st.phase=3;st.eveA=powmod(g,rnd(4,20),p);st.eveStart=performance.now();render();startTick();}}]});
+    });
+    const et=$('#eturn'); et&&(et.onclick=()=>{st.eveV=st.eveV*g%p;st.eveN++;render();});
+    const ec=$('#ecall'); ec&&(ec.onclick=()=>{
+      if(st.eveV!==st.eveA){st.mistakes++;toast(`The dial shows ${st.eveV}, not ${st.eveA}. Keep turning.`);return;}
+      st.eveTime=(performance.now()-st.eveStart)/1000; stopTick(); render();
+      const stars=st.mistakes===0?3:st.mistakes<=2?2:1;
+      endMission('m5',stars,'Cracked, on a tiny dial',[
+        'Both sides publish <b>A = g<sup>a</sup> mod p</b> and <b>B = g<sup>b</sup> mod p</b>. Each raises the other’s value to their own secret, so both get <b>g<sup>ab</sup> mod p</b>.',
+        '<b>g</b>, <b>p</b>, <b>A</b> and <b>B</b> are all public. Recovering a secret exponent from A is the <b>discrete logarithm problem</b>.',
+        `You cracked a ${p}-position dial in ${st.eveTime.toFixed(1)} seconds. Real groups use primes of 2048+ bits (or elliptic curves with ECDHE), where the same search would outlast the universe.`,
+        '<b>Key length matters</b> (slide 9): each added bit doubles the brute-force work.'],
+        `<p>Eve found the secret ${st.eveN} in ${st.eveTime.toFixed(1)} s.</p>`);
+    });
+    $$('[data-bits]',screen).forEach(b=>b.onclick=()=>{st.bits=+b.dataset.bits;render();});
+  }
+  function bruteText(bits){
+    const log10Guesses=bits*Math.log10(2), log10Rate=12; // a trillion guesses per second
+    const log10Sec=log10Guesses-log10Rate;
+    let t;
+    if(log10Sec<0) t='less than a second';
+    else if(log10Sec<Math.log10(3600)) t=`${Math.round(10**log10Sec)} seconds`;
+    else if(log10Sec<Math.log10(86400*365)) t=`${Math.round(10**log10Sec/3600)} hours`;
+    else{const y=log10Sec-Math.log10(31557600); t=y<6?`${Math.round(10**y).toLocaleString()} years`:`about 10<sup>${Math.round(y)}</sup> years (the universe is about 10<sup>10</sup> years old)`;}
+    return `${bits}-bit: about 10<sup>${Math.round(log10Guesses)}</sup> possible secrets.<br>At a trillion guesses per second: ${t}.`;
+  }
+  function startTick(){stopTick();timer=setInterval(()=>{const el=$('#eveClock');if(el&&st.eveTime==null)el.textContent=((performance.now()-st.eveStart)/1000).toFixed(1)+'s';},100);}
+  function stopTick(){if(timer){clearInterval(timer);timer=null;}}
+  cleanup=stopTick;
+  render();
+}
+
+/* =====================================================================
+   MISSION 6 — BREACH DAY (perfect forward secrecy)
+   ===================================================================== */
+function breachDay(){
+  const DAYS=[['Mon','Customer login'],['Tue','Payroll upload'],['Wed','Medical record'],['Thu','Password reset']];
+  const st={phase:'rsa',run:0,shred:[false,false,false,false],pending:null,breached:false,quizScore:0};
+  let tick=null;
+  function sessCard(i){
+    const [d,what]=DAYS[i]; let cls='',status='Not run yet';
+    if(i<st.run){
+      if(st.phase==='rsa'){status=st.breached?'Session key unlocked with stolen server key. EXPOSED.':'Session key sent locked with server’s long-term public key. Eve recorded it.';cls=st.breached?'exposed':'';}
+      else{const s=st.shred[i];status=st.breached?(s?'Ephemeral key was destroyed. SAFE.':'Ephemeral key was still in memory. EXPOSED.'):(s?'Ephemeral key destroyed.':'Ephemeral key still in memory!');cls=st.breached?(s?'safe':'exposed'):'';}
+    }
+    const pending=st.pending&&st.pending.i===i;
+    return `<div class="sess ${cls}"><span class="lbl">${d}</span><b>${what}</b><span class="st">${status}</span>
+      ${pending?`<div class="timerbar"><i id="shredBar"></i></div><button type="button" class="btn primary sm" id="shred">Destroy ephemeral key</button>`:''}</div>`;
+  }
+  function render(){
+    let intro,controls;
+    if(st.phase==='rsa'){
+      intro=`<div class="card" style="margin-bottom:14px"><h3>Round 1: static key exchange</h3><p style="margin:0">Your server uses one long-term RSA key pair for every session. Each session key is sent locked with the server’s public key (just like mission 2). Eve can’t open it, so she records it and waits.</p></div>`;
+      controls=st.run<4?`<button type="button" class="btn primary" id="runS">Run ${DAYS[st.run][0]} session</button>`:!st.breached?`<button type="button" class="btn primary" id="breach" style="background:var(--bad);border-color:var(--bad)">Friday: the server is breached</button>`:`<button type="button" class="btn primary" id="toDhe">Replay the week with DHE →</button>`;
+    }else if(st.phase==='dhe'){
+      intro=`<div class="card" style="margin-bottom:14px"><h3>Round 2: ephemeral Diffie-Hellman (DHE)</h3><p style="margin:0">Now each session agrees on a <b>brand-new key</b> with Diffie-Hellman, as in missions 4 and 5. Nothing secret is sent. When the session ends, destroy the ephemeral key before the timer runs out. Keys are short-lived and expire.</p></div>`;
+      controls=st.pending?'<span class="muted">Destroy the key before the timer runs out.</span>':st.run<4?`<button type="button" class="btn primary" id="runS">Run ${DAYS[st.run][0]} session</button>`:!st.breached?`<button type="button" class="btn primary" id="breach" style="background:var(--bad);border-color:var(--bad)">Friday: the server is breached</button>`:`<button type="button" class="btn primary" id="toQuiz">Debrief →</button>`;
+    }
+    if(st.phase==='quiz') return quiz();
+    screen.innerHTML=shell('m6')+`<p class="story">Eve can’t break your encryption today, so she records all of it and waits. On Friday she steals your server’s long-term private key. What can she read?</p>${intro}
+      <div class="sessions">${DAYS.map((_,i)=>sessCard(i)).join('')}</div><div class="choices" style="margin-top:14px">${controls}</div>`;
+    wireHome();
+    const rs=$('#runS'); rs&&(rs.onclick=runSession);
+    const br=$('#breach'); br&&(br.onclick=()=>{st.breached=true;render();
+      const lost=st.phase==='rsa'?4:st.shred.filter(s=>!s).length;
+      toast(st.phase==='rsa'?'<b>All four recorded sessions just opened.</b> One stolen key unlocked every session key it ever protected.':lost?`${lost} session${lost>1?'s':''} exposed because the ephemeral key was never destroyed.`:'<b>Nothing exposed.</b> The stolen key was never used to protect any session key.',6000);});
+    const td=$('#toDhe'); td&&(td.onclick=()=>{st.phase='dhe';st.run=0;st.breached=false;st.shred=[false,false,false,false];render();});
+    const tq=$('#toQuiz'); tq&&(tq.onclick=()=>{st.phase='quiz';render();});
+    const sh=$('#shred'); sh&&(sh.onclick=()=>{const i=st.pending.i;st.shred[i]=true;clearT();st.pending=null;st.run=i+1;render();});
+  }
+  function runSession(){
+    if(st.phase==='rsa'){st.run++;render();return;}
+    const i=st.run,dur=rnd(2600,3600),t0=performance.now();
+    st.pending={i}; st.run=i+1; render();
+    clearT();
+    tick=setInterval(()=>{
+      const left=1-(performance.now()-t0)/dur, bar=$('#shredBar');
+      if(bar) bar.style.width=Math.max(0,left*100)+'%';
+      if(left<=0){clearT();st.pending=null;render();toast('Too slow. That key is still sitting in memory.');}
+    },50);
+  }
+  function clearT(){if(tick){clearInterval(tick);tick=null;}}
+  cleanup=clearT;
+  function quiz(){
+    const Q=[
+      {q:'Eve records today’s DHE traffic. Next year she steals the server’s private key. What can she decrypt from today?',o:['Nothing. Today’s session keys were ephemeral and are gone.','Everything she recorded.','Only the first session of the day.'],a:0,e:'The long-term key never protected the session keys, so stealing it later reveals nothing from the past. That is perfect forward secrecy.'},
+      {q:'What does the E in DHE and ECDHE stand for?',o:['Encrypted','Ephemeral','Exchange','Elliptic'],a:1,e:'Ephemeral: a new, unique key value generated for each session, short-lived, then discarded. (The EC in ECDHE is Elliptic Curve.)'},
+      {q:'With PFS key agreement, how does each side get the session key?',o:['The server sends it locked with its public key.','A certificate authority hands it out.','Each side computes it from values they exchanged. The key itself never crosses the wire.'],a:2,e:'Slide 22: keys are never exchanged. The two stations agree on a key value.'},
+      {q:'Why is plain (static) RSA key exchange considered deprecated?',o:['Compromise of one long-term private key exposes every recorded session.','RSA can’t encrypt keys.','It needs a shared key in advance.'],a:0,e:'That is exactly what Round 1 showed you: one stolen key, four exposed sessions.'},
+    ];
+    const kept=st.shred.filter(Boolean).length;
+    renderQuiz(shell('m6')+`<p class="story">Debrief. You kept ${kept} of 4 DHE sessions safe. Four quick questions.</p>`,Q,score=>{
+      const stars=1+(kept===4?1:0)+(score>=3?1:0);
+      endMission('m6',stars,'Forward secrecy',[
+        '<b>Static key exchange</b> protects every session key with one long-term key. Steal that key later and every recorded session opens. That risk is why it’s deprecated.',
+        '<b>Perfect forward secrecy</b> uses key agreement: a new, unique, <b>ephemeral</b> key each session that is short-lived and useless once it expires.',
+        'Know the names: <b>DHE</b> (Diffie-Hellman Ephemeral) and <b>ECDHE</b> (Elliptic Curve DHE).',
+        'Ephemeral only helps if keys really are destroyed. A key left in memory is a key that can be stolen.'],
+        `<p>Sessions kept safe: ${kept}/4 · Quiz: ${score}/4</p>`);
+    });
+  }
+  render();
+}
+
+/* ---------- shared quiz ---------- */
+function renderQuiz(head,Q,done){
+  let i=0,score=0;
+  function draw(){
+    const q=Q[i];
+    screen.innerHTML=head+`<div class="card qwrap"><p class="lbl">Question ${i+1} of ${Q.length}</p><div class="q"><h3>${q.q}</h3><div class="opts">${q.o.map((o,j)=>`<button type="button" class="opt" data-j="${j}">${o}</button>`).join('')}</div><div id="qex"></div></div></div>`;
+    wireHome();
+    let answered=false;
+    $$('.opt',screen).forEach(b=>b.onclick=()=>{
+      if(answered)return; answered=true;
+      const j=+b.dataset.j, right=j===q.a; if(right)score++;
+      b.classList.add(right?'right':'wrong'); $$('.opt',screen)[q.a].classList.add('right');
+      $('#qex').innerHTML=`<div class="explain"><b>${right?'Correct.':'Not quite.'}</b> ${q.e}</div><div class="choices"><button type="button" class="btn primary" id="qnext">${i+1<Q.length?'Next question':'Finish'}</button></div>`;
+      $('#qnext').onclick=()=>{i++; if(i<Q.length)draw(); else done(score);};
+      $('#qnext').focus();
+    });
+  }
+  draw();
+}
+
+/* =====================================================================
+   MISSION 7 — GET CERTIFIED (CSR, chain, CA/RA)
+   ===================================================================== */
+function getCertified(){
+  const ROUNDS=[
+    {title:'Round 1: Request a certificate',sub:'You run quokkabank.com and need a certificate. Tap the steps in the order they happen.',steps:[
+      'Generate a key pair and keep the private key',
+      'Send your public key in a Certificate Signing Request (CSR)',
+      'The CA (through its Registration Authority) verifies you are who you claim',
+      'The CA inserts your public key into the certificate and signs it with the CA’s private key',
+      'The certificate is issued back to you'],
+     why:'The CSR never contains your private key. The CA signs with <b>its own</b> private key, and that signature is what browsers check.'},
+    {title:'Round 2: Walk the chain of trust',sub:'A browser visits www.quokkabank.com. Tap the certificates from the one the site sends first up to the one the browser already trusts.',steps:[
+      'Leaf certificate: www.quokkabank.com',
+      'Intermediate CA: Veridian TLS CA 3 (signed the leaf)',
+      'Root CA: Veridian Root CA (signed the intermediate, self-signs itself)',
+      'Trust store: the root certificate is already installed on the client'],
+     why:'A two-tier hierarchy keeps the root CA offline and protected. Intermediates do the day-to-day signing. If the root is compromised, the whole PKI is untrusted.'},
+  ];
+  const st={r:0,placed:0,mistakes:0,order:null};
+  function draw(){
+    const R=ROUNDS[st.r]; if(!st.order) st.order=shuffle(R.steps.map((s,i)=>i));
+    screen.innerHTML=shell('m7')+`<p class="story">Mission 9 will ask you to trust a public key because of a certificate. First, see where certificates come from.</p>
+      <div class="card qwrap"><h3>${R.title}</h3><p>${R.sub}</p><div class="steps">${st.order.map(i=>`<button type="button" class="step ${i<st.placed?'placed':''}" data-i="${i}"><span class="n">${i<st.placed?i+1:'?'}</span><span>${R.steps[i]}</span></button>`).join('')}</div>
+      ${st.placed===R.steps.length?`<div class="explain">${R.why}</div><div class="choices"><button type="button" class="btn primary" id="nextR">${st.r+1<ROUNDS.length?'Next round':'Final round: quick check'}</button></div>`:''}</div>`;
+    wireHome();
+    $$('.step',screen).forEach(b=>b.onclick=()=>{
+      const i=+b.dataset.i; if(i<st.placed)return;
+      if(i===st.placed){st.placed++;draw();}
+      else{st.mistakes++;b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');}
+    });
+    const n=$('#nextR'); n&&(n.onclick=()=>{st.r++;st.placed=0;st.order=null;if(st.r<ROUNDS.length)draw();else finalQuiz();});
+  }
+  function finalQuiz(){
+    const Q=[
+      {q:'Which key does the CA use to sign your certificate?',o:['Your private key','The CA’s private key','The CA’s public key','Your public key'],a:1,e:'The CA signs with its private key. Anyone can verify that signature with the CA’s public key, which sits in the root certificate.'},
+      {q:'What is the Registration Authority’s job?',o:['It verifies the requester’s identity for the CA. It is subordinate to the CA.','It is the root of trust.','It revokes certificates by itself.'],a:0,e:'The RA handles identity checks as a subordinate of the root CA, so the CA can focus on signing.'},
+      {q:'Your intranet server uses a self-signed certificate. A laptop that has never seen it will…',o:['Trust it, because it’s encrypted.','Warn that it’s untrusted, because no CA in its trust store vouches for it.','Ask the RA.'],a:1,e:'Self-signed certificates aren’t signed by a trusted CA, so they’re untrusted unless you add them to the trust store yourself.'},
+      {q:'A single-CA hierarchy is simple, but it has one big weakness. What is it?',o:['It can’t issue wildcards.','It’s a single point of failure with higher risk of compromise.','It needs OCSP.'],a:1,e:'One CA doing everything is a SPoF. Two-tier hierarchies protect the root and delegate to intermediates.'},
+    ];
+    renderQuiz(shell('m7'),Q,score=>{
+      const stars=st.mistakes<=1&&score>=3?3:st.mistakes<=4&&score>=2?2:1;
+      endMission('m7',stars,'Certified',[
+        '<b>CSR flow:</b> generate the key pair and keep the private key, send the public key in a CSR, the CA or RA authenticates you, the CA signs with its private key, and the certificate is issued.',
+        '<b>Certificates</b> bind an identity (subject, SAN) to a public key. They include a validity period and the issuer, and are signed by the CA.',
+        '<b>Root of trust:</b> the root CA certificate is self-signed and installed on clients. Root → intermediate → leaf is a two-tier hierarchy.',
+        'The <b>RA</b> is subordinate to the root CA and verifies identities. <b>Self-signed</b> certificates are untrusted without PKI.'],
+        `<p>Ordering mistakes: ${st.mistakes} · Quiz: ${score}/4</p>`);
+    });
+  }
+  draw();
+}
+
+/* =====================================================================
+   MISSION 8 — CHECKPOINT (certificate validation, timed)
+   ===================================================================== */
+function checkpoint(){
+  const TODAY=Date.UTC(2026,2,14), DAY=864e5;
+  const fmt=t=>new Date(t).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'});
+  const TRUSTED=['Veridian Root CA','Polaris Global Root R2','Anchorline Root X1'];
+  const INTER=[['Veridian TLS CA 3','Veridian Root CA'],['Polaris DV CA','Polaris Global Root R2'],['Anchorline Issuing CA 1','Anchorline Root X1']];
+  const SITES=['quokkabank.com','lumenmail.net','tidalshop.io','pinecrest.edu','orbitair.com','fernfit.app','harborhealth.org','mapleledger.com','gladecloud.dev'];
+  const serial=()=>[...Array(6)].map(()=>rnd(0,255).toString(16).padStart(2,'0')).join(':').toUpperCase();
+  const REASONS={date:'Expired or not yet valid',name:'Name doesn’t match',trust:'Untrusted issuer',revoked:'Revoked or suspended',sig:'Bad signature'};
+  function base(site){
+    const host=pick(['www.','login.','app.','mail.'])+site, from=TODAY-rnd(20,300)*DAY;
+    return {host,cn:host,san:[host,site],chain:pick(INTER),from,to:from+398*DAY,serial:serial(),sig:true,crl:[],ocsp:'good',answer:'ok'};
+  }
+  const TYPES={
+    ok:s=>Object.assign(base(s),{why:'Everything checks out: dates, name, chain to a trusted root, not revoked, signature valid.'}),
+    wild:s=>{const c=base(s);c.host='shop.'+s;c.cn='*.'+s;c.san=['*.'+s,s];c.why=`*.${s} covers exactly one label, like shop.${s}. Everything else checks out.`;return c;},
+    expired:s=>{const c=base(s);c.to=TODAY-rnd(1,45)*DAY;c.from=c.to-398*DAY;c.answer='date';c.why=`The certificate expired on ${fmt(c.to)}. Today is ${fmt(TODAY)}.`;return c;},
+    notyet:s=>{const c=base(s);c.from=TODAY+rnd(3,40)*DAY;c.to=c.from+398*DAY;c.answer='date';c.why=`The certificate isn’t valid until ${fmt(c.from)}.`;return c;},
+    lookalike:s=>{const c=base(s);const [n,t]=s.split('.');const fake=pick([n.replace(/o/,'0')!==n?n.replace(/o/,'0')+'.'+t:n+'-secure.'+t,n+'-login.'+t,n+'.'+(t==='com'?'co':'com')]);c.cn='www.'+fake;c.san=['www.'+fake,fake];c.answer='name';c.why=`You’re visiting ${c.host}, but the certificate’s SAN lists only ${c.san.join(', ')}. A lookalike name.`;return c;},
+    apex:s=>{const c=base(s);c.host=s;c.cn='*.'+s;c.san=['*.'+s];c.answer='name';c.why=`A wildcard *.${s} covers one label, like www.${s}. It doesn’t cover the bare domain ${s}, and the SAN doesn’t list it.`;return c;},
+    deep:s=>{const c=base(s);c.host='eu.shop.'+s;c.cn='*.'+s;c.san=['*.'+s,s];c.answer='name';c.why=`*.${s} matches exactly one label. eu.shop.${s} has two, so it isn’t covered.`;return c;},
+    self:s=>{const c=base(s);c.chain=[c.host+' (self-signed)'];c.answer='trust';c.why='Self-signed: the issuer is the subject itself. No CA in your trust store vouches for it.';return c;},
+    shady:s=>{const c=base(s);c.chain=['ShadyTrust Issuing CA','ShadyTrust Root'];c.answer='trust';c.why='The chain ends at “ShadyTrust Root”, which isn’t in your trust store.';return c;},
+    crl:s=>{const c=base(s);c.crl=[{serial:c.serial,reason:'keyCompromise'}];c.ocsp='revoked (keyCompromise)';c.answer='revoked';c.why='The serial number is on the CRL with reason keyCompromise.';return c;},
+    hold:s=>{const c=base(s);c.crl=[{serial:c.serial,reason:'certificateHold'}];c.ocsp='revoked (certificateHold)';c.answer='revoked';c.why='certificateHold is a suspension. It may be reinstated later, but right now the certificate is not valid.';return c;},
+    ocsp:s=>{const c=base(s);c.ocsp='revoked (keyCompromise) at 09:12 today';c.answer='revoked';c.why='Not on the CRL because the CRL was downloaded yesterday. OCSP gives real-time status, and it says revoked this morning.';return c;},
+    sig:s=>{const c=base(s);c.sig=false;c.answer='sig';c.why='The issuer’s signature doesn’t verify with the issuer’s public key, so the certificate was altered or forged.';return c;},
+  };
+  const bad=shuffle(['expired','notyet','lookalike','apex','deep','self','shady','crl','hold','ocsp','sig']).slice(0,7);
+  const sites=shuffle(SITES);
+  const queue=shuffle(['ok','ok','wild',...bad]).map((t,i)=>{const c=TYPES[t](sites[i%sites.length]);c.type=t;
+    const decoys=[...Array(rnd(2,4))].map(()=>({serial:serial(),reason:pick(['keyCompromise','superseded','cessationOfOperation','certificateHold'])}));
+    c.crlList=shuffle(decoys.concat(c.crl)); return c;});
+  const LIMIT=45;
+  const st={i:0,score:0,strikes:0,correct:0,t0:performance.now(),paused:false,ocspShown:false,left:LIMIT};
+  let iv=null;
+  function start(){stop();iv=setInterval(()=>{if(st.paused)return;st.left=LIMIT-(performance.now()-st.t0)/1000;const el=$('#cpTime');if(el)el.textContent=Math.max(0,Math.ceil(st.left))+'s';const bar=$('#cpBar');if(bar)bar.style.width=Math.max(0,st.left/LIMIT*100)+'%';if(st.left<=0)decide(null);},100);}
+  function stop(){if(iv){clearInterval(iv);iv=null;}}
+  cleanup=stop;
+  function render(){
+    const c=queue[st.i];
+    screen.innerHTML=shell('m8')+`<p class="story">You are the browser. For each site, check the certificate, then trust it or block it with the reason. Wrongly trusting a bad certificate is a strike. Three strikes ends your shift.</p>
+    <div class="hud"><span>Cert <b>${st.i+1}</b>/${queue.length}</span><span>Score <b>${st.score}</b></span><span>Strikes <span class="strikes">${[0,1,2].map(k=>`<i class="${k<st.strikes?'on':''}"></i>`).join('')}</span></span><span>Time <b id="cpTime">${Math.ceil(st.left)}s</b></span><span>Today <b>${fmt(TODAY)}</b></span></div>
+    <div class="timerbar" style="margin-bottom:12px"><i id="cpBar" style="width:${st.left/LIMIT*100}%"></i></div>
+    <div class="cp"><div>
+      <div class="addr" aria-label="Address bar">${ICON.lock('var(--muted)',false).replace('class="ic"','class="ic" style="width:16px;height:16px"')}https://${esc(c.host)}/</div>
+      <div class="cert"><h4>X.509 Certificate</h4><dl>
+        <dt>Subject CN</dt><dd>${esc(c.cn)}</dd>
+        <dt>SAN (DNS)</dt><dd>${c.san.map(esc).join(', ')}</dd>
+        <dt>Issuer chain</dt><dd><div class="chain">${[c.cn].concat(c.type==='self'?[]:c.chain).map(x=>`<span>${esc(x)}</span>`).join('')}${c.type==='self'?`<span>${esc(c.chain[0])}</span>`:''}</div></dd>
+        <dt>Valid from</dt><dd>${fmt(c.from)}</dd><dt>Valid to</dt><dd>${fmt(c.to)}</dd>
+        <dt>Serial</dt><dd>${c.serial}</dd>
+        <dt>Signature</dt><dd class="${c.sig?'sigok':'sigbad'}">${c.sig?'Verifies with issuer’s public key':'Does NOT verify with issuer’s public key'}</dd>
+      </dl></div>
+      <div class="verdicts"><button type="button" class="vbtn trust" data-v="ok">Trust and connect</button>${Object.entries(REASONS).map(([k,v])=>`<button type="button" class="vbtn" data-v="${k}">Block: ${v}</button>`).join('')}</div>
+    </div>
+    <aside class="card manual"><h4>Trust store (roots)</h4><ul>${TRUSTED.map(t=>`<li>${t}</li>`).join('')}</ul>
+      <h4>CRL · downloaded ${fmt(TODAY-DAY)} 02:00</h4><ul>${c.crlList.map(r=>`<li>${r.serial} · ${r.reason}</li>`).join('')}</ul>
+      <h4>OCSP (real-time)</h4><button type="button" class="btn sm" id="ocspBtn">Query OCSP for this serial</button>${st.ocspShown?`<div class="ocsp">Status: <b class="${c.ocsp==='good'?'sigok':'sigbad'}">${c.ocsp}</b></div>`:''}
+      <h4>Checklist</h4><ul style="font-family:var(--f-body);font-size:14px"><li>Dates include today?</li><li>Host matches a SAN entry? (* = one label)</li><li>Chain ends at a trusted root?</li><li>Not on CRL, and OCSP says good?</li><li>Signature verifies?</li></ul></aside></div>`;
+    wireHome();
+    $$('[data-v]',screen).forEach(b=>b.onclick=()=>decide(b.dataset.v));
+    $('#ocspBtn').onclick=()=>{st.ocspShown=true;render();};
+  }
+  function decide(v){
+    if(st.paused)return; st.paused=true;
+    const c=queue[st.i]; let title,tone,msg;
+    if(v===null){st.strikes++;title='Time’s up';tone='fail';msg='The user gave up waiting. Counts as a strike.';}
+    else if(v===c.answer){const bonus=Math.max(0,Math.round(st.left));st.score+=100+bonus;st.correct++;title=v==='ok'?'Correct: safe to connect':'Correct: blocked';tone='win';msg=`+${100+bonus} points.`;}
+    else if(v==='ok'){st.strikes++;title='You trusted a bad certificate';tone='fail';msg='Strike. An attacker could now read or change this traffic.';}
+    else if(c.answer==='ok'){title='False alarm';tone='fail';msg='That certificate was fine. No points, but no strike.';}
+    else{st.score+=40;title='Blocked, wrong reason';tone='info';msg=`+40 points. Blocking was right, but the reason was “${REASONS[c.answer]}”.`;}
+    const endNow=st.strikes>=3, last=st.i+1>=queue.length;
+    modal({title,tone,html:`<p>${msg}</p><p class="explain">${c.why}</p>`,actions:[{label:endNow?'Shift over':last?'See results':'Next certificate',primary:true,fn:()=>{
+      if(endNow||last) return finish(endNow);
+      st.i++;st.ocspShown=false;st.paused=false;st.t0=performance.now();st.left=LIMIT;render();
+    }}]});
+  }
+  function finish(fired){
+    stop();
+    const acc=st.correct/queue.length;
+    const stars=fired?1:acc>=.9?3:acc>=.7?2:1;
+    endMission('m8',stars,fired?'Three strikes':'Shift complete',[
+      '<b>Validity period:</b> the certificate must be within its from/to dates today.',
+      '<b>Subject Alternative Name (SAN):</b> the browser checks that the site’s FQDN matches a SAN entry. A <b>wildcard</b> (*.site.com) covers one level of subdomain. It doesn’t cover the bare domain or deeper levels.',
+      '<b>Chain of trust:</b> the chain must end at a root CA in the client’s trust store. Self-signed and unknown roots are untrusted.',
+      '<b>Revocation:</b> a <b>CRL</b> is a downloaded list and can be stale. <b>OCSP</b> checks one certificate in real time. A <b>suspension</b> (certificateHold) can be reinstated. A <b>revocation</b> can’t.',
+      'The CA’s <b>signature</b> must verify with the issuer’s public key. If it doesn’t, the certificate was tampered with.'],
+      `<p>Score ${st.score} · ${st.correct}/${queue.length} fully correct · ${st.strikes} strike${st.strikes===1?'':'s'}</p>`);
+  }
+  render(); start();
+}
+
+/* ---------- boot ---------- */
+$('#homeBtn').onclick=home;
+function start(data){drawStarCount(); if(data&&data.screen&&MISSIONS[data.screen]) open(data.screen); else home();}
+if(window.claude&&window.claude.hot&&window.claude.hot.snapshot) window.claude.hot.snapshot(()=>({screen:current}));
+window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
+})();
+</script>
+</body>
+</html>
