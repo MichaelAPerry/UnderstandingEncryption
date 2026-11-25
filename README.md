@@ -2,6 +2,10 @@
 
 Teaching materials for **CompTIA Security+ (SY0-701), Chapter 2: Cryptographic Solutions and Threats**, plus **Beat Eve**, a browser game that teaches the chapter's hardest ideas: key exchange and PKI.
 
+**[Play Beat Eve](https://michaelaperry.github.io/UnderstandingEncryption/game/)** · [Teacher notes](game/README.md) · [Lecture slides](Chapter02%281%29.pptx)
+
+![Beat Eve mission board showing the cast and the first three missions](game/mission-board.png)
+
 ## What's here
 
 | Path | What it is |
